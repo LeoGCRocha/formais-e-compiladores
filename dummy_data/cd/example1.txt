@@ -1,0 +1,10 @@
+start
+a := b + 6 + c
+d := 5 + 6 * 3
+f
+b := 5 + a
+if b > 10
+c := 10
+endif
+c := 10
+end
