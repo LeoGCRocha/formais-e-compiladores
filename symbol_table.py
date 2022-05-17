@@ -1,4 +1,3 @@
-from venv import create
 import txt_modules as txt
 import csv_modules as csv
 arr = txt.read_text_file('dummy_data/cd/example1.txt')
