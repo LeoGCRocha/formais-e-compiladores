@@ -1,3 +1,5 @@
 a:=b+6 + c
 d := 5 > 6
 e := a + j
+k := "leonardo"
+fghi  teste
