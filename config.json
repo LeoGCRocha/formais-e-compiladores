@@ -1,0 +1,11 @@
+{
+    "reserved" : [
+        "if", "else", "while"
+    ],
+    "assignment" : [
+        ":="
+    ],
+    "operators" : [
+        "+", "-", "*", "^", "/"
+    ]
+}
