@@ -1,6 +1,6 @@
 import re
 import json 
-import helper as h
+from helper import Helper
 class SymbolTable:
     def __init__(self, code_file, config_file, output_file):
         self._code_file = code_file
@@ -8,9 +8,9 @@ class SymbolTable:
         self.__output_file = output_file
         self.create_symbol_table_from_file()
     def create_symbol_table_from_file(self):
-        arr = h.read_text_file(self._code_file)
-        Symbol_Table = json.load(open("config.json"))
-        reserved = h.adjustResverdWord(Symbol_Table['reserved']) + Symbol_Table['assignment'] + Symbol_Table['operators']
+        arr = Helper.read_text_file(self._code_file)
+        Symbol_Table = json.load(open(self.__config_file))
+        reserved = Helper.adjustResverdWord(Symbol_Table['reserved']) + Symbol_Table['assignment'] + Symbol_Table['operators']
         symbol_table = []
         symbol_table_hash_map = {}
         for line in arr:
@@ -34,8 +34,7 @@ class SymbolTable:
                                 key_size = 0
                                 if current != "":
                                     if current not in symbol_table_hash_map:
-                                        # trocar para float type
-                                        if not current.isnumeric():
+                                        if not Helper.is_float(current):
                                             symbol_table.append("{}".format(current))
                                             symbol_table_hash_map[current] = True
                                     current = ""
@@ -44,8 +43,7 @@ class SymbolTable:
                     else:
                         if current != "":
                             if current not in symbol_table_hash_map:
-                                # trocar este metodo para leitor de float
-                                if not current.isnumeric():
+                                if not Helper.is_float(current):
                                     symbol_table.append("{}".format(current))
                                     symbol_table_hash_map[current] = True
                             current = ""
@@ -53,9 +51,8 @@ class SymbolTable:
                     if (cursor == len(line)):
                         if current != "":
                             if current not in symbol_table_hash_map:
-                                # trocar para float type
-                                if not current.isnumeric():
+                                if not Helper.is_float(current):
                                     symbol_table.append("{}".format(current))
                                     symbol_table_hash_map[current] = True
                             current = ""
-        h.write_csv_file_symbol_table(self.__output_file, symbol_table)
+        Helper.write_csv_file_symbol_table(self.__output_file, symbol_table)
