@@ -40,20 +40,6 @@ class Tokenizer:
 		self.token_type_to_char[Token_type.PARENTHESES].extend([")", "("])
 		self.token_type_to_char[Token_type.BRACKETS].extend(["[", "]"])
 		self.token_type_to_char[Token_type.CURLY_BRACKETS].extend(["{", "}"])
-	
-	def __search_and_split(self, token_type):
-		while True:
-			splitted = False
-
-			for i in range(len(self.file_text)):
-				string = self.file_text[i]
-				for word in self.token_type_to_char[token_type]:
-					if word in string:
-						substrings = string.split(word, 1)
-						string
-
-			if (not splitted):
-				break
 
 	def tokenize(self, file):
 		self.file_text = [open(file, "r").read()]
