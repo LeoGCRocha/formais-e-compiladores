@@ -7,7 +7,6 @@ def adjustReservedWord(reserved_word_list):
         reserved_word_list[i] = reserved_word_list[i] + " "
     return reserved_word_list
 def create_symbol_table_from_file(code_file):
-    last_id = 0
     arr = txt.read_text_file(code_file)
     arr = txt.read_text_file('dummy_data/cd/example1.txt')
     Symbol_Table = json.load(open("config.json"))
