@@ -34,6 +34,7 @@ class SymbolTable:
                                 key_size = 0
                                 if current != "":
                                     if current not in symbol_table_hash_map:
+                                        # trocar para float type
                                         if not current.isnumeric():
                                             symbol_table.append("{}".format(current))
                                             symbol_table_hash_map[current] = True
@@ -43,6 +44,7 @@ class SymbolTable:
                     else:
                         if current != "":
                             if current not in symbol_table_hash_map:
+                                # trocar este metodo para leitor de float
                                 if not current.isnumeric():
                                     symbol_table.append("{}".format(current))
                                     symbol_table_hash_map[current] = True
@@ -51,6 +53,7 @@ class SymbolTable:
                     if (cursor == len(line)):
                         if current != "":
                             if current not in symbol_table_hash_map:
+                                # trocar para float type
                                 if not current.isnumeric():
                                     symbol_table.append("{}".format(current))
                                     symbol_table_hash_map[current] = True
