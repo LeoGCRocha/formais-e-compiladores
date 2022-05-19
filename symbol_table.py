@@ -14,7 +14,6 @@ def create_symbol_table_from_file(code_file):
     symbol_table = []
     symbol_table_hash_map = {}
     for line in arr:
-        # line command
         if line in reserved:
             pass
         else:
@@ -26,7 +25,7 @@ def create_symbol_table_from_file(code_file):
                         for key in reserved:
                             result = line[cursor:].find(key) + cursor
                             if result != cursor:
-                                pass # not correct key
+                                pass
                             else:
                                 if len(key) > key_size:
                                     key_size = len(key)
