@@ -7,6 +7,7 @@ class Helper:
             return True
         except:
             return False    
+    @staticmethod
     def adjustResverdWord(reserved):
         return [x + " " for x in reserved]
     def read_text_file(filename):
@@ -22,6 +23,7 @@ class Helper:
         except ValueError:
             print('File not found')
         return arr
+    @staticmethod
     def read_text_file_keys(filename):
         """
         Reads a text file and returns a array of string to each line.
@@ -35,6 +37,7 @@ class Helper:
         except ValueError:
             print('File not found')
         return arr
+    @staticmethod
     def write_csv_file_symbol_table(filename, arr):
         with open(filename,'w') as file:
             for line in arr:
