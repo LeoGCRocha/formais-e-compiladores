@@ -1,7 +1,6 @@
 import json 
 from utils.helper import Helper
 
-
 class SymbolTable:
     def __init__(self, code_file, config_file, output_file):
         self._code_file = code_file
