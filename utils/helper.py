@@ -5,10 +5,12 @@ class Helper:
             float(number)
             return True
         except:
-            return False    
+            return False
+
     @staticmethod
     def adjustResverdWord(reserved):
         return [x + " " for x in reserved]
+
     @staticmethod
     def read_text_file(filename):
         arr = []
@@ -20,9 +22,11 @@ class Helper:
         except ValueError:
             print('File not found')
         return arr
+
     @staticmethod
-    def write_csv_file_symbol_table(filename, arr):
+    def write_csv_file(filename, header, arr):
         with open(filename,'w') as file:
+            file.write(f"{header}\n")
             for line in arr:
                 file.write(line)
                 file.write('\n')

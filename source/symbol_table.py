@@ -1,16 +1,18 @@
-import re
 import json 
-from helper import Helper
+from utils.helper import Helper
+
+
 class SymbolTable:
     def __init__(self, code_file, config_file, output_file):
         self._code_file = code_file
         self.__config_file = config_file
         self.__output_file = output_file
         self.create_symbol_table_from_file()
+
     def create_symbol_table_from_file(self):
         arr = Helper.read_text_file(self._code_file)
         Symbol_Table = json.load(open(self.__config_file))
-        reserved = Helper.adjustResverdWord(Symbol_Table['reserved']) + Symbol_Table['assignment'] + Symbol_Table['operators']
+        reserved = Helper.adjustResverdWord(Symbol_Table['reserved']) + Symbol_Table['assignment'] + Symbol_Table['operators'] + Symbol_Table['delimiters']
         symbol_table = []
         symbol_table_hash_map = {}
         for line in arr:
@@ -55,4 +57,4 @@ class SymbolTable:
                                     symbol_table.append("{}".format(current))
                                     symbol_table_hash_map[current] = True
                             current = ""
-        Helper.write_csv_file_symbol_table(self.__output_file, symbol_table)
+        Helper.write_csv_file(self.__output_file, "Symbol Table", symbol_table)
