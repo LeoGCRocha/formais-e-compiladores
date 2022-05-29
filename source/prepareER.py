@@ -36,10 +36,11 @@ def prepare_expression(expression):
         if i > 0:
             ant = expression[i-1] 
             if (isinstance(ant, int) or ant.isalpha()) and (char == '?'):
-                str1 = expression_final[:i+concat]
+                str1 = expression_final[:i+concat-1]
+                strmed = expression_final[i+concat-1]
                 str2 = expression_final[i+1+concat:]
-                expression_final = str1 + '|&' + str2
-                concat +=1
+                expression_final = str1 + '(' + strmed + '|&)' + str2
+                concat +=3
     concat = 0
     expression = expression_final
     
@@ -47,7 +48,9 @@ def prepare_expression(expression):
         char = expression[i]
         if i > 0:
             ant = expression[i-1]
-            if (isinstance(ant, int) or ant.isalpha() or ant in "&*") and (isinstance(char, int) or char.isalpha() or char == "&*"):
+            if (isinstance(ant, int) or ant.isalpha() or ant in "&*") and (isinstance(char, int) or char.isalpha() or char == "&*") \
+            or (ant == ")") and (isinstance(char, int) or char.isalpha())\
+            or (isinstance(ant, int) or ant.isalpha()) and (char == "("):
                 str1 = expression_final[:i+concat]
                 str2 = expression_final[i+concat:]
                 expression_final = str1 + '.' + str2
@@ -62,6 +65,8 @@ def prepare_expression(expression):
 #print(verify_expression("a..b|c|d*"))
 #print(verify_expression("a.(b|c)|d*"))
 #print(verify_expression("a.(b|c))|d*"))   
-print(prepare_expression("ab|cd|def"))
-print(prepare_expression("a.b*ec?"))
-print(prepare_expression("a|b?cd?"))
+#print(prepare_expression("ab|cd|def"))
+#print(prepare_expression("a.b*ec?"))
+#print(prepare_expression("a|b?cd?"))
+#print(prepare_expression("a|b?c"))
+#print(prepare_expression("((a|b)*b(c|d))"))
