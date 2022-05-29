@@ -1,7 +1,7 @@
 from node import Node
 from expression import Expression
 
-class AbstractSyntaxTree:
+class SyntaxTree:
     def __init__(self, expression):
         self.__expression = expression
         self.enumerateCount = 0
