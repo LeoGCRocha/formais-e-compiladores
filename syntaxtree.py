@@ -6,7 +6,7 @@ class SyntaxTree:
         self.__expression = expression
         self.enumerateCount = 0
         self.__root = self.__build(expression)
-    
+
     def __build(self, expression):
         first, last, operator = Expression.subExpressions(expression)
         node = Node(operator)
@@ -108,7 +108,7 @@ class SyntaxTree:
         return self.__root
 
 def main():
-    tree = AbstractSyntaxTree("a.(a|b)*.a")
+    tree = SyntaxTree("a.b|c.d.e|g.f")
     # tree = Tree("((a.b)|c.a)*|(a|b)*.c")
     # tree = Tree("(a.b)|c.a")
     # tree = Tree("(a.b)")

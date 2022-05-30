@@ -5,11 +5,16 @@ class Expression:
     @staticmethod
     def subExpressions(expression):
         expression = list(expression)
-        index = Expression.findOperatorIndex(expression)
+        indexC, indexO = Expression.findOperatorIndex(expression)
         try:
             openingParenthesesIndex = expression.index("(")
         except ValueError:
             openingParenthesesIndex = -1
+
+        if (openingParenthesesIndex != -1):
+            index = indexO if indexO != math.inf and indexO < openingParenthesesIndex else indexC
+        else:
+            index = indexO if indexO != math.inf else indexC
 
         if (openingParenthesesIndex != -1):
             if index > openingParenthesesIndex:
@@ -17,9 +22,10 @@ class Expression:
                     expression,
                     openingParenthesesIndex
                 )
-                index = Expression.findOperatorIndex(
+                indexC, indexO = Expression.findOperatorIndex(
                     expression[closingParenthesesIndex:]
                 ) + closingParenthesesIndex
+                index = indexO if indexO != math.inf and indexO > closingParenthesesIndex else indexC
                 if index == math.inf:
                     if expression[-1] == op.STAR:
                         return expression[1:-2], None, op.STAR
@@ -54,4 +60,4 @@ class Expression:
         except ValueError:
             orIndex = math.inf
         
-        return min(concatIndex, orIndex)
+        return concatIndex, orIndex
