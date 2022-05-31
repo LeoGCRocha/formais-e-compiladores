@@ -6,7 +6,7 @@ class Node:
         right = None,
         num = None,
         firstPos = [],
-        endPos = [],
+        lastPos = [],
         nullable = None
     ):
         self.__symbol = symbol
@@ -14,7 +14,7 @@ class Node:
         self.__left = left
         self.__num = num
         self.__firstPos = firstPos
-        self.__endPos = endPos
+        self.__lastPos = lastPos
         self.__nullable = nullable
         self.__father = father
     def symbol(self):
@@ -36,13 +36,15 @@ class Node:
     def setNum(self, num):
         self.__num = num
     def firstPos(self):
-        return self.firstPos
-    def endPos(self):
-        return self.endPos
+        return self.__firstPos
+    def lastPos(self):
+        return self.__lastPos
     def firstPos(self):
         return self.__firstPos
     def setFirstPos(self, firstPos):
         self.__firstPos = firstPos
+    def setLastPos(self, lastPos):
+        self.__lastPos = lastPos
     def nullable(self):
         return self.__nullable
     def setNullable(self, nullable):
