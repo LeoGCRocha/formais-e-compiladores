@@ -1,9 +1,9 @@
 class Node:
     def __init__(self,
         symbol,
-        father = None,
         left = None,
         right = None,
+        father = None,
         num = None,
         firstPos = [],
         lastPos = [],
