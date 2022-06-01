@@ -6,7 +6,7 @@ class SyntaxTree:
     def __init__(self, expression):
         self.__expression = expression
         self.enumerateCount = 1
-        self.__root = Node(OP.CONCAT, self.__build(expression), Node("#"))
+        self.__root = Node(OP.CONCAT, self.__build(expression), Node(OP.END))
         self.numerateLeaves(self.__root)
         self.setNodes(self.__root)
         self.__followPosTable = []
@@ -99,7 +99,7 @@ class SyntaxTree:
                         node.setLastPos(lastpostn)
                     else:
                         node.setLastPos(node.right().lastPos())
-                elif node.symbol() == "*":
+                elif node.symbol() == OP.STAR:
                     # A star-node n = c1*
                     # node c1
                     node.setNullable(True)
