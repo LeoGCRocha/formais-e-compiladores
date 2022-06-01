@@ -7,6 +7,12 @@ class SyntaxTree:
         self.__expression = expression
         self.enumerateCount = 1
         self.__root = Node(OP.CONCAT, self.__build(expression), Node("#"))
+        self.numerateLeaves(self.__root)
+        self.setNodes(self.__root)
+        self.__followPosTable = []
+        self.prepareFollowPos()
+        self.setFollowPos(self.__root)
+
 
     def __build(self, expression):
         first, last, operator = Expression.subExpressions(expression)
@@ -41,7 +47,7 @@ class SyntaxTree:
         if node != None:
             if node.isLeaf():
                 # A leaf labeled &
-                if node.symbol() == "&":
+                if node.symbol() == OP.EPSILON:
                     node.setNullable(True)
                     self.setNodes(node.father())
                 else:
@@ -54,7 +60,7 @@ class SyntaxTree:
                     self.setNodes(node.left())
                 if node.right().nullable() == None:
                     self.setNodes(node.right())
-                if node.symbol() == "|":
+                if node.symbol() == OP.OR:
                     # An or-node n = c1|c2
                     # node.left c1
                     # node.right c2
@@ -71,7 +77,7 @@ class SyntaxTree:
                     # set
                     node.setFirstPos(firstpostn)
                     node.setLastPos(lastpostn)
-                elif node.symbol() == ".":
+                elif node.symbol() == OP.CONCAT:
                     # A cat-node n = c1c2
                     # node.left c1
                     # node.right c2s
@@ -100,16 +106,41 @@ class SyntaxTree:
                     # firstpos(c1)
                     node.setFirstPos(node.left().firstPos())
                     node.setLastPos(node.left().firstPos())
-    
+    def prepareFollowPos(self):
+        for _ in range(1, self.enumerateCount):
+            self.__followPosTable.append([])
+        self.__followPosTable[-1] = [0]
+    def setFollowPos(self, node):
+        # from leaves to root
+        if not node.isLeaf() and node.symbol() != OP.END:
+            self.setFollowPos(node.left())
+            self.setFollowPos(node.right())
+            if node.symbol() == OP.CONCAT:
+                # left node c1
+                # right node c2
+                # lastpos(c1)  i; each element of firstpos(c2) are in followpos(i)
+                c1 = node.left().lastPos()
+                c2 = node.right().firstPos()
+                for i in c1:
+                    listc1c2 = [self.__followPosTable[i-1], c2]
+                    self.__followPosTable[i-1] = list(set().union(*listc1c2))
+            elif node.symbol() == OP.STAR:
+                # i lastpos(n)
+                # each element of firstpos(n) are in followpos(i)
+                for i in node.lastpos():
+                    listc1c2 = [self.__followPosTable[i-1], node.firstpos()]
+                    self.__followPosTable[i-1] = list(set().union(*listc1c2))
     def root(self):
         return self.__root
+    def followPosTable(self):
+        return self.__followPosTable
 
 def main():
     tree = SyntaxTree("a.b|c.d")
-    tree.numerateLeaves(tree.root())
-    tree.setNodes(tree.root())
-    print(tree.root().firstPos())
-    print(tree.root().lastPos())
+    print(tree.followPosTable())
+    # list = tree.followPosTable()
+    # str1 = '\n'.join(str(e) for e in list)
+    # print(str1)
     # tree = Tree("((a.b)|c.a)*|(a|b)*.c")
     # tree = Tree("(a.b)|c.a")
     # tree = Tree("(a.b)")
