@@ -1,18 +1,21 @@
 from node import Node
 from expression import Expression
 from operators import Operators as OP
+from automata import *
 
 class SyntaxTree:
     def __init__(self, expression):
         self.__expression = expression
-        self.enumerateCount = 1
+        self.__enumerateCount = 1
         self.__root = Node(OP.CONCAT, self.__build(expression), Node(OP.END))
+        self.__dicSymbols = {}
         self.numerateLeaves(self.__root)
         self.setNodes(self.__root)
         self.__followPosTable = []
         self.prepareFollowPos()
         self.setFollowPos(self.__root)
-
+        # self.__DFA = DFA()
+        self.createAutomata()
 
     def __build(self, expression):
         first, last, operator = Expression.subExpressions(expression)
@@ -35,8 +38,9 @@ class SyntaxTree:
 
     def numerateLeaves(self, node):
         if node.isLeaf():
-            node.setNum(self.enumerateCount)
-            self.enumerateCount = self.enumerateCount + 1
+            node.setNum(self.__enumerateCount)
+            self.__enumerateCount = self.__enumerateCount + 1
+            self.__dicSymbols[node.num()] = node.symbol()
         else:
             if node.left() != None:
                 self.numerateLeaves(node.left())
@@ -107,7 +111,7 @@ class SyntaxTree:
                     node.setFirstPos(node.left().firstPos())
                     node.setLastPos(node.left().firstPos())
     def prepareFollowPos(self):
-        for _ in range(1, self.enumerateCount):
+        for _ in range(1, self.__enumerateCount):
             self.__followPosTable.append([])
         self.__followPosTable[-1] = [0]
     def setFollowPos(self, node):
@@ -134,10 +138,59 @@ class SyntaxTree:
         return self.__root
     def followPosTable(self):
         return self.__followPosTable
-
+    def toAutomataLabel(self, list):
+        str1 = ','.join(str(e) for e in list)
+        str1 = "[{}]".format(str1)
+        return str1 
+    def stateOnList(self, list, label):
+        for i in range (0, len(list)):
+            if list[i].label() == label:
+                return i
+        return -1
+    def createAutomata(self):
+        #TODO 
+        initialState = DeterministicState()
+        initialState.setLabel(self.toAutomataLabel(self.root().firstPos()))
+        stateList = [initialState]
+        toVisit = [self.root().firstPos()]
+        while(len(toVisit) > 0):
+            list = toVisit.pop(0)
+            # Define state label
+            str1 = self.toAutomataLabel(list)
+            # Deteministic State
+            state = DeterministicState()
+            state.setLabel(str1)
+            listsymbol = []
+            for i in list:
+                listsymbol.append(self.__dicSymbols[i])
+            dicTo = {}
+            for i in range(0, len(list)):
+                symbol = listsymbol[i]
+                if symbol not in dicTo:
+                    dicTo[symbol] = self.__followPosTable[list[i]-1]
+                else:
+                    list = [dicTo[symbol], self.__followPosTable[list[i]-1]]
+                    listunion = list(set().union(*list))
+                    dicTo[symbol] = listunion
+            for key in dicTo:
+                if dicTo[key] != [0]:
+                    pos = self.stateOnList(stateList, dicTo[key])
+                    if  pos == -1:
+                        dt = DeterministicState()
+                        dt.setLabel(dicTo[key])
+                        stateList.append(dt)
+                        toVisit.append(dicTo[key])
+                    else:
+                        dt = stateList[pos]
+                    # state.addTransition(key, dt)
+            # TODO : Adicionar metodo addState da classe.
+            print(state.label())
+            print(dicTo)
+        # TODO : Definir estado final
+        # TODO : Definir estado inicial
 def main():
     tree = SyntaxTree("a.b|c.d")
-    print(tree.followPosTable())
+    # print(tree.followPosTable())
     # list = tree.followPosTable()
     # str1 = '\n'.join(str(e) for e in list)
     # print(str1)
