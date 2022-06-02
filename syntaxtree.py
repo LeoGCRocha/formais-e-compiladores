@@ -60,10 +60,12 @@ class SyntaxTree:
                     node.setNullable(False)
                     self.setNodes(node.father())
             else:
-                if node.left().nullable() == None:
-                    self.setNodes(node.left())
-                if node.right().nullable() == None:
-                    self.setNodes(node.right())
+                if node.left() != None:
+                    if node.left().nullable() == None:
+                        self.setNodes(node.left())
+                if node.right() != None:
+                    if node.right().nullable() == None:
+                        self.setNodes(node.right())
                 if node.symbol() == OP.OR:
                     # An or-node n = c1|c2
                     # node.left c1
@@ -85,10 +87,11 @@ class SyntaxTree:
                     # A cat-node n = c1c2
                     # node.left c1
                     # node.right c2s
-                    if node.left().nullable() and node.right().nullable():
-                        node.setNullable(True)
-                    else:
-                        node.setNullable(False)
+                    if node.left() != None and node.right() != None:
+                        if node.left().nullable() and node.right().nullable():
+                            node.setNullable(True)
+                        else:
+                            node.setNullable(False)
                     # nullable(c1)
                     if node.left().nullable():
                         c1c2list = [node.left().firstPos(), node.right().firstPos()]
@@ -109,7 +112,8 @@ class SyntaxTree:
                     node.setNullable(True)
                     # firstpos(c1)
                     node.setFirstPos(node.left().firstPos())
-                    node.setLastPos(node.left().firstPos())
+                    node.setLastPos(node.left().lastPos())
+
     def prepareFollowPos(self):
         for _ in range(1, self.__enumerateCount):
             self.__followPosTable.append([])
@@ -117,8 +121,10 @@ class SyntaxTree:
     def setFollowPos(self, node):
         # from leaves to root
         if not node.isLeaf() and node.symbol() != OP.END:
-            self.setFollowPos(node.left())
-            self.setFollowPos(node.right())
+            if node.left() != None:
+                self.setFollowPos(node.left())
+            if node.right() != None:
+                self.setFollowPos(node.right())
             if node.symbol() == OP.CONCAT:
                 # left node c1
                 # right node c2
@@ -131,8 +137,8 @@ class SyntaxTree:
             elif node.symbol() == OP.STAR:
                 # i lastpos(n)
                 # each element of firstpos(n) are in followpos(i)
-                for i in node.lastpos():
-                    listc1c2 = [self.__followPosTable[i-1], node.firstpos()]
+                for i in node.lastPos():
+                    listc1c2 = [self.__followPosTable[i-1], node.firstPos()]
                     self.__followPosTable[i-1] = list(set().union(*listc1c2))
     def root(self):
         return self.__root
@@ -156,13 +162,11 @@ class SyntaxTree:
         finalStates = []
         toVisit = [self.root().firstPos()]
         while(len(toVisit) > 0):
-            print("toVisit: {}".format(toVisit))
             list = toVisit.pop(0)
             # Define state label
             str1 = self.toAutomataLabel(list)
             state = stateList[self.stateOnList(stateList, str1)]
             listsymbol = []
-            print("Current state {}:".format(state.label()))
             for i in list:
                 listsymbol.append(self.__dicSymbols[i])
             dicTo = {}
@@ -182,46 +186,24 @@ class SyntaxTree:
                         dt.setLabel(dicTo[key])
                         stateList.append(dt)
                         toVisit.append(dicTo[key])
-                        print(state.label())
-                        state.addTransition(key, dt)
-                        transitions = state.getTransitions()
-                        for key in transitions:
-                            print("{} -> {}".format(key, transitions[key].label()))
-                        # print(key, dt.label())
                     else:
                         dt = stateList[pos]
-                        for key in transitions:
-                            print("{} -> {}".format(key, transitions[key].label()))
-                        print(state.label())
-                        print(key, dt.label())
             state.setTransitions(dicTo)
-            print(dicTo)
             if "#" in dicTo:
                 finalStates.append(state)
         self.__DFA = DFA(stateList, initialState, finalStates)
 def main():
-    tree = SyntaxTree("a.b|c.d")
+    tree = SyntaxTree("a.b.c")
     print("Estado inicial: {}".format(tree.DFA().initialState().label()))
-    print("All States")
-    for i in tree.DFA().stateList():
-        print(i.label())
     # Estados 
-    # for i in tree.DFA().stateList():
-    #     print("{}".format(i.label()))
-    #     transitions = i.getTransitions()
-    #     for key in transitions:
-    #         print("{} -> {}".format(key, transitions[key].label()))
+    for i in tree.DFA().stateList():
+        print("{}".format(i.label()))
+        transitions = i.getTransitions()
+        for key in transitions:
+            print("{} -> {}".format(key, transitions[key]))
     print("Estado final: ", end="")
     for i in tree.DFA().finalStates():
         print(i.label())
-    # tree = Tree("((a.b)|c.a)*|(a|b)*.c")
-    # tree = Tree("(a.b)|c.a")
-    # tree = Tree("(a.b)")
-    # tree = Tree("c.a")
-    # tree = Tree("(a|b)*.c")
-    # tree = Tree("(a|b)*")
-    # tree = Tree("a|b")
-    # tree = Tree("b*")
 
 if __name__ == "__main__":
     main()

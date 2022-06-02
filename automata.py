@@ -92,7 +92,10 @@ class BaseState(ABC):
     
     def label(self):
         return self.__label
-    
+
+    def setTransitions(self):
+        pass
+
     # TODO : Padronizar
     def setLabel(self, label):
         self.__label = label
@@ -106,6 +109,9 @@ class DeterministicState(BaseState):
 
     def __setitem__(self, key, value):
         self.addTransition(key, value)
+
+    def setTransitions(self, transitions):
+        self.transitions = transitions
 
     def getTransitions(self):
         return self.transitions
