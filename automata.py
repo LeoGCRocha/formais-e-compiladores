@@ -1,9 +1,10 @@
-from abc import ABC, abstractclassmethod
+from abc import abstractmethod
+from abc import ABC
 import copy
 
 # automata base class. Note that this class is abstract
 class Automata(ABC):
-    @abstractclassmethod
+    @abstractmethod
     def __init__(self, states, initial, final, name):
         self.name = name
         self.initial = initial
@@ -22,10 +23,9 @@ class DFA(Automata):
     def __init__(self, states = [], initial = None, final = [], name = "DFADefaultName"):
         # parent constructor
         super().__init__(states, initial, final, name)
-        # verifies determinism
-        # for state in states:
-        #     for value in state.transitions().values():
-        #         assert(not isinstance(value, list))
+        for state in states:
+            for value in state.transitions().values():
+                assert(not isinstance(value, list))
 
     # run the automata, given the input
     def run(self, inputString, trace = False):
@@ -69,19 +69,23 @@ class NFA(Automata):
 
 # base class for states. Note that this class is abstract
 class BaseState(ABC):
-    @abstractclassmethod
-    def __init__(self, transitions):
-        assert(isinstance(transitions, dict))
-        self.transitions = transitions
+    @abstractmethod
+    def __init__(self):
+        # assert(isinstance(transitions, dict))
+        # self.transitions = transitions
         # unique id for each state
         self.__id = IdCounter.get()
         self.__label = None
+        self.__transitions = {}
 
-    @abstractclassmethod
+    @abstractmethod
     def addTransition(self, symbol, to):
-        pass
+        self.__transitions[symbol] = to
 
     def transitions(self):
+        return self.__transitions
+
+    def getTransitions(self):
         return self.__transitions
     
     def __repr__(self):
@@ -101,20 +105,14 @@ class BaseState(ABC):
         self.__label = label
 
 class DeterministicState(BaseState):
-    def __init__(self, transitions = {}):
-        super().__init__(transitions)
+    def __init__(self):
+        super().__init__()
     
-    def addTransition(self, symbol, to):
-        self.transitions[symbol] = to
-
     def __setitem__(self, key, value):
         self.addTransition(key, value)
 
-    def setTransitions(self, transitions):
-        self.transitions = transitions
-
-    def getTransitions(self):
-        return self.transitions
+    def addTransition(self, symbol, to):
+        return super().addTransition(symbol, to)
 
 class NonDeterministicState(BaseState):
     def __init__(self, transitions = {}):
@@ -162,7 +160,6 @@ class UnknownTypeState(NonDeterministicState):
 # counter class
 class IdCounter:
     counter = 0
-
     # generates unique id
     @staticmethod
     def get():

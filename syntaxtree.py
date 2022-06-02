@@ -146,13 +146,13 @@ class SyntaxTree:
         return self.__DFA
     def followPosTable(self):
         return self.__followPosTable
-    def toAutomataLabel(self, list):
-        str1 = ','.join(str(e) for e in list)
+    def toAutomataLabel(self, listArray):
+        str1 = ','.join(str(e) for e in listArray)
         str1 = "[{}]".format(str1)
         return str1 
-    def stateOnList(self, list, label):
-        for i in range (0, len(list)):
-            if str(list[i].label()) == str(label):
+    def stateOnList(self, listArray, label):
+        for i in range (0, len(listArray)):
+            if str(listArray[i].label()) == str(label):
                 return i
         return -1
     def createAutomata(self):
@@ -162,21 +162,21 @@ class SyntaxTree:
         finalStates = []
         toVisit = [self.root().firstPos()]
         while(len(toVisit) > 0):
-            list = toVisit.pop(0)
+            listArray = toVisit.pop(0)
             # Define state label
-            str1 = self.toAutomataLabel(list)
+            str1 = self.toAutomataLabel(listArray)
             state = stateList[self.stateOnList(stateList, str1)]
             listsymbol = []
-            for i in list:
+            for i in listArray:
                 listsymbol.append(self.__dicSymbols[i])
             dicTo = {}
-            for i in range(0, len(list)):
+            for i in range(0, len(listArray)):
                 symbol = listsymbol[i]
                 if symbol not in dicTo:
-                    dicTo[symbol] = self.__followPosTable[list[i]-1]
+                    dicTo[symbol] = self.__followPosTable[listArray[i]-1]
                 else:
-                    list = [dicTo[symbol], self.__followPosTable[list[i]-1]]
-                    listunion = list(set().union(*list))
+                    listArray = [dicTo[symbol], self.__followPosTable[listArray[i]-1]]
+                    listunion = list(set().union(*listArray))
                     dicTo[symbol] = listunion
             for key in dicTo:
                 if dicTo[key] != [0]:
@@ -186,24 +186,26 @@ class SyntaxTree:
                         dt.setLabel(dicTo[key])
                         stateList.append(dt)
                         toVisit.append(dicTo[key])
+                        state.addTransition(key, dt)
                     else:
                         dt = stateList[pos]
-            state.setTransitions(dicTo)
+                        state.addTransition(key, dt)
             if "#" in dicTo:
-                finalStates.append(state)
+                if self.stateOnList(finalStates, state.label()) == -1:
+                    finalStates.append(state)
         self.__DFA = DFA(stateList, initialState, finalStates)
 def main():
-    tree = SyntaxTree("a.b.c")
+    tree = SyntaxTree("a.(b.c|d.e).f*")
     print("Estado inicial: {}".format(tree.DFA().initialState().label()))
     # Estados 
     for i in tree.DFA().stateList():
-        print("{}".format(i.label()))
         transitions = i.getTransitions()
+        print("Estado: {}".format(i.label()))
         for key in transitions:
-            print("{} -> {}".format(key, transitions[key]))
+            print("{} -> {}".format(key, transitions[key].label()))
     print("Estado final: ", end="")
     for i in tree.DFA().finalStates():
         print(i.label())
-
+        
 if __name__ == "__main__":
     main()
