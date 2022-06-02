@@ -24,8 +24,8 @@ class Expression:
                 )
                 indexC, indexO = Expression.findOperatorIndex(
                     expression[closingParenthesesIndex:]
-                ) 
-                index = indexO if indexO != math.inf and indexO > closingParenthesesIndex else indexC
+                )
+                index = indexO if indexO != math.inf else indexC
                 index += closingParenthesesIndex
                 if index == math.inf:
                     if expression[-1] == op.STAR:
