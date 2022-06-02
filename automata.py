@@ -5,36 +5,27 @@ import copy
 class Automata(ABC):
     @abstractclassmethod
     def __init__(self, states, initial, final, name):
-        # verifies attribute types
-        if states:
-            assert(isinstance(states, list))
-            if len(states):
-                assert(isinstance(states[0], BaseState))
-        
-        if initial:
-            assert(isinstance(BaseState))
-
-        if final:
-            assert(isinstance(final, list))
-            if len(final):
-                assert(isinstance(final[0], BaseState))
-
-        assert(isinstance(name, str))
-        self.__name = name
-        self.__initial = initial
-        self.__final = final
-        self.__states = states
-        self.__deadState = DeterministicState()
+        self.name = name
+        self.initial = initial
+        self.final = final
+        self.states = states
+        self.deadState = DeterministicState()
+    def initialState(sellf):
+        pass
+    def finalState(self):
+        pass
+    def stateList(self):
+        pass
 
 # deterministic finite automata
 class DFA(Automata):
     def __init__(self, states = [], initial = None, final = [], name = "DFADefaultName"):
         # parent constructor
-        super(Automata).__init__(self, initial, final, states, name)
+        super().__init__(states, initial, final, name)
         # verifies determinism
-        for state in states:
-            for value in state.transitions().values():
-                assert(not isinstance(value, list))
+        # for state in states:
+        #     for value in state.transitions().values():
+        #         assert(not isinstance(value, list))
 
     # run the automata, given the input
     def run(self, inputString, trace = False):
@@ -51,9 +42,16 @@ class DFA(Automata):
                 print("accepted")
             else:
                 print("rejected")
-
         return currentState
 
+    # initial state
+    def initialState(self):
+        return self.initial
+    # final states
+    def finalStates(self):
+        return self.final
+    def stateList(self):
+        return self.states
     # executes one step in the automata
     def __step(self, currentState, char, trace = False):
         try:
@@ -74,7 +72,7 @@ class BaseState(ABC):
     @abstractclassmethod
     def __init__(self, transitions):
         assert(isinstance(transitions, dict))
-        self.__transitions = transitions
+        self.transitions = transitions
         # unique id for each state
         self.__id = IdCounter.get()
         self.__label = None
@@ -104,15 +102,13 @@ class DeterministicState(BaseState):
         super().__init__(transitions)
     
     def addTransition(self, symbol, to):
-        # ensure determinism
-        # TODO: fix this
-        #assert(not isinstance(symbol, list))
-        #assert(symbol not in self.__transitions.keys())
-
-        self.__transitions[symbol] = to
+        self.transitions[symbol] = to
 
     def __setitem__(self, key, value):
         self.addTransition(key, value)
+
+    def getTransitions(self):
+        return self.transitions
 
 class NonDeterministicState(BaseState):
     def __init__(self, transitions = {}):
