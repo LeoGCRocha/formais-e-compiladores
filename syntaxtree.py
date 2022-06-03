@@ -206,6 +206,5 @@ def main():
     print("Estado final: ", end="")
     for i in tree.DFA().finalStates():
         print(i.label())
-        
 if __name__ == "__main__":
     main()
