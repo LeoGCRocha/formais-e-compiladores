@@ -63,21 +63,14 @@ class Expression:
         
         return concatIndex, orIndex
 
+    @staticmethod
     def findOperatorBeforeParenthesisIndex(expression):
         try:
             openingParenthesisIndex = expression.index("(")
         except ValueError:
             openingParenthesisIndex = math.inf
 
-        try:
-            concatIndex = expression.index(op.CONCAT)
-        except ValueError:
-            concatIndex = math.inf
-
-        try:
-            orIndex = expression.index(op.OR)
-        except ValueError:
-            orIndex = math.inf
+        concatIndex, orIndex = Expression.findOperatorIndex(expression)
 
         if concatIndex > openingParenthesisIndex:
             concatIndex = math.inf
