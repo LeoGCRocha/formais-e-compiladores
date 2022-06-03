@@ -5,12 +5,12 @@ def verify_expression(expression):
     ant = ' '
     parent_level = 0
     
-    for i in range(0,len(expression)-1):
+    for i in range(0,len(expression)):
         char = expression[i]
         if char in valid_inputs:
             if i > 1:
                 ant = expression[i-1]
-                if (ant in '(|.' and char in '|.*?)') or (ant in '?*' and char in '?*'):
+                if (ant in '(|.' and char in '|.*?)') or (ant in '?*' and char in '?*') or (ant in '|.' and char in ')' or (i == (len(expression)-1) and char in '|.')):
                     return False
             if char == '(':
                 parent_level +=1
@@ -85,5 +85,4 @@ def prepare_expression(expression):
                 str2 = expression_final[i+concat:]
                 expression_final = str1 + '.' + str2
                 concat +=1
-
     return expression_final
