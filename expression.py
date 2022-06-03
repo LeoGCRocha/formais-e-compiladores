@@ -22,7 +22,7 @@ class Expression:
                     expression,
                     openingParenthesesIndex
                 )
-                indexC, indexO = Expression.findOperatorIndex(
+                indexC, indexO = Expression.findOperatorBeforeParenthesisIndex(
                     expression[closingParenthesesIndex:]
                 )
                 index = indexO if indexO != math.inf else indexC
@@ -59,6 +59,30 @@ class Expression:
         try:
             orIndex = expression.index(op.OR)
         except ValueError:
+            orIndex = math.inf
+        
+        return concatIndex, orIndex
+
+    def findOperatorBeforeParenthesisIndex(expression):
+        try:
+            openingParenthesisIndex = expression.index("(")
+        except ValueError:
+            openingParenthesisIndex = math.inf
+
+        try:
+            concatIndex = expression.index(op.CONCAT)
+        except ValueError:
+            concatIndex = math.inf
+
+        try:
+            orIndex = expression.index(op.OR)
+        except ValueError:
+            orIndex = math.inf
+
+        if concatIndex > openingParenthesisIndex:
+            concatIndex = math.inf
+        
+        if orIndex > openingParenthesisIndex:
             orIndex = math.inf
         
         return concatIndex, orIndex

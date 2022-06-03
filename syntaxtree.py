@@ -20,6 +20,7 @@ class SyntaxTree:
 
     def __build(self, expression):
         first, last, operator = Expression.subExpressions(expression)
+        print(f"{expression} {first} {last} {operator}")
         node = Node(operator)
         if (operator == OP.STAR):
             if len(first) == 1:
@@ -207,3 +208,17 @@ class SyntaxTree:
         print("Estado final: ", end="")
         for i in self.__DFA.finalStates():
             print(i.label())        
+def main():
+    tree = SyntaxTree("a.a*.(b.b*.a.a*.b)*")
+    print("Estado inicial: {}".format(tree.DFA().initialState().label()))
+    # Estados 
+    for i in tree.DFA().stateList():
+        transitions = i.getTransitions()
+        print("Estado: {}".format(i.label()))
+        for key in transitions:
+            print("{} -> {}".format(key, transitions[key].label()))
+    print("Estado final: ", end="")
+    for i in tree.DFA().finalStates():
+        print(i.label())
+if __name__ == "__main__":
+    main()
