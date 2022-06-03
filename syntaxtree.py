@@ -195,7 +195,7 @@ class SyntaxTree:
                     finalStates.append(state)
         self.__DFA = DFA(stateList, initialState, finalStates)
 def main():
-    tree = SyntaxTree("a.(b.c|d.e).f*")
+    tree = SyntaxTree("a.(b.c|d.e).f*|g")
     print("Estado inicial: {}".format(tree.DFA().initialState().label()))
     # Estados 
     for i in tree.DFA().stateList():
