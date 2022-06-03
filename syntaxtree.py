@@ -20,7 +20,6 @@ class SyntaxTree:
 
     def __build(self, expression):
         first, last, operator = Expression.subExpressions(expression)
-        print(f"{expression} {first} {last} {operator}")
         node = Node(operator)
         if (operator == OP.STAR):
             if len(first) == 1:
@@ -174,7 +173,8 @@ class SyntaxTree:
             for i in listArray:
                 listsymbol.append(self.__dicSymbols[i])
             dicTo = {}
-            for i in range(0, len(listArray)):
+            i = 0
+            while i < len(listArray):
                 symbol = listsymbol[i]
                 if symbol not in dicTo:
                     dicTo[symbol] = self.__followPosTable[listArray[i]-1]
@@ -182,6 +182,7 @@ class SyntaxTree:
                     listArray = [dicTo[symbol], self.__followPosTable[listArray[i]-1]]
                     listunion = list(set().union(*listArray))
                     dicTo[symbol] = listunion
+                i+=1
             for key in dicTo:
                 if dicTo[key] != [0]:
                     pos = self.stateOnList(stateList, dicTo[key])
@@ -207,18 +208,6 @@ class SyntaxTree:
                 print("{} -> {}".format(key, transitions[key].label()))
         print("Estado final: ", end="")
         for i in self.__DFA.finalStates():
-            print(i.label())        
-def main():
-    tree = SyntaxTree("a.a*.(b.b*.a.a*.b)*")
-    print("Estado inicial: {}".format(tree.DFA().initialState().label()))
-    # Estados 
-    for i in tree.DFA().stateList():
-        transitions = i.getTransitions()
-        print("Estado: {}".format(i.label()))
-        for key in transitions:
-            print("{} -> {}".format(key, transitions[key].label()))
-    print("Estado final: ", end="")
-    for i in tree.DFA().finalStates():
-        print(i.label())
-if __name__ == "__main__":
-    main()
+            print(i.label(), end="")        
+        print()
+    

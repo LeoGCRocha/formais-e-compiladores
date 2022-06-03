@@ -40,7 +40,7 @@ def prepare_expression(expression):
         if expression[1] in string.digits:
             for i in range(string.digits.index(expression[1]),string.digits.index(expression[3])+1):
                 if i == string.digits.index(expression[1]):
-                   expression_final = string.digits[i] 
+                    expression_final = string.digits[i] 
                 else:
                     expression_final = expression_final+'|'+ string.digits[i]
             
@@ -51,7 +51,7 @@ def prepare_expression(expression):
         if expression[1] in string.ascii_lowercase:
             for i in range(string.ascii_lowercase.index(expression[1]),string.ascii_lowercase.index(expression[3])+1):
                 if i == string.ascii_lowercase.index(expression[1]):
-                   expression_final = string.ascii_lowercase[i] 
+                    expression_final = string.ascii_lowercase[i] 
                 else:
                     expression_final = expression_final+'|'+ string.ascii_lowercase[i]
             
