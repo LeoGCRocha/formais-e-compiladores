@@ -1,0 +1,5 @@
+a.b|c.d
+a|bc
+abcde*
+fgij|(a|b)*
+a|b|c|d

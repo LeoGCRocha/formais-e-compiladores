@@ -2,6 +2,7 @@ from node import Node
 from expression import Expression
 from operators import Operators as OP
 from automata import *
+from prepareER import *
 
 class SyntaxTree:
     def __init__(self, expression):
@@ -142,6 +143,8 @@ class SyntaxTree:
                     self.__followPosTable[i-1] = list(set().union(*listc1c2))
     def root(self):
         return self.__root
+    def getAutomata(self):
+        return self.__DFA
     def DFA(self):
         return self.__DFA
     def followPosTable(self):
@@ -194,17 +197,13 @@ class SyntaxTree:
                 if self.stateOnList(finalStates, state.label()) == -1:
                     finalStates.append(state)
         self.__DFA = DFA(stateList, initialState, finalStates)
-def main():
-    tree = SyntaxTree("a.(b.c|d.e).f*|g")
-    print("Estado inicial: {}".format(tree.DFA().initialState().label()))
-    # Estados 
-    for i in tree.DFA().stateList():
-        transitions = i.getTransitions()
-        print("Estado: {}".format(i.label()))
-        for key in transitions:
-            print("{} -> {}".format(key, transitions[key].label()))
-    print("Estado final: ", end="")
-    for i in tree.DFA().finalStates():
-        print(i.label())
-if __name__ == "__main__":
-    main()
+    def printAutomata(self):
+        print("Estado inicial: {}".format(self.__DFA.initialState().label()))
+        for i in self.__DFA.stateList():
+            transitions = i.getTransitions()
+            print("Estado: {}".format(i.label()))
+            for key in transitions:
+                print("{} -> {}".format(key, transitions[key].label()))
+        print("Estado final: ", end="")
+        for i in self.__DFA.finalStates():
+            print(i.label())        

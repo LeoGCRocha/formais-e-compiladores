@@ -38,7 +38,7 @@ def prepare_expression(expression):
         if expression[1] in string.digits:
             for i in range(string.digits.index(expression[1]),string.digits.index(expression[3])+1):
                 if i == string.digits.index(expression[1]):
-                   expression_final = string.digits[i] 
+                    expression_final = string.digits[i] 
                 else:
                     expression_final = expression_final+'|'+ string.digits[i]
             
@@ -49,7 +49,7 @@ def prepare_expression(expression):
         if expression[1] in string.ascii_lowercase:
             for i in range(string.ascii_lowercase.index(expression[1]),string.ascii_lowercase.index(expression[3])+1):
                 if i == string.ascii_lowercase.index(expression[1]):
-                   expression_final = string.ascii_lowercase[i] 
+                    expression_final = string.ascii_lowercase[i] 
                 else:
                     expression_final = expression_final+'|'+ string.ascii_lowercase[i]
             
@@ -86,25 +86,4 @@ def prepare_expression(expression):
                 expression_final = str1 + '.' + str2
                 concat +=1
 
-   
     return expression_final
-
-
-#print(verify_expression("a.b|c|d"))
-#print(verify_expression("a.b|c|d*"))
-#print(verify_expression("a..b|c|d*"))
-#print(verify_expression("a.(b|c)|d*"))
-#print(verify_expression("a.(b|c))|d*"))   
-#print(prepare_expression("ab|cd|def"))
-#print(prepare_expression("a.b*ec?"))
-#print(prepare_expression("a|b?cd?"))
-#print(prepare_expression("a|b?c"))
-#print(prepare_expression("((a|b)*b(c|d))"))
-#print(string.digits)
-#print(string.ascii_lowercase)
-#print(prepare_expression('[0-3]+'))
-#print(prepare_expression('[a-j]+'))
-print(prepare_expression('[2-6]+'))
-print(prepare_expression('[d-t]+'))
-print(prepare_expression('[0-3]*'))
-print(prepare_expression('[b-e]*'))
