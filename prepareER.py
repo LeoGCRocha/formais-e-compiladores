@@ -10,7 +10,9 @@ def verify_expression(expression):
         if char in valid_inputs:
             if i > 1:
                 ant = expression[i-1]
-                if (ant in '(|.' and char in '|.*?)') or (ant in '?*' and char in '?*') or (ant in '|.' and char in ')' or (i == (len(expression)-1) and char in '|.')):
+                if (ant in '(|.' and char in '|.*?)') or (ant in '?*' and char in '?*') or (ant in '|.' and char == ')') or (ant == "*" and char == '('):
+                    return False
+                if (i == (len(expression)-1) and char in '|.'):
                     return False
             if char == '(':
                 parent_level +=1
@@ -38,7 +40,7 @@ def prepare_expression(expression):
         if expression[1] in string.digits:
             for i in range(string.digits.index(expression[1]),string.digits.index(expression[3])+1):
                 if i == string.digits.index(expression[1]):
-                    expression_final = string.digits[i] 
+                   expression_final = string.digits[i] 
                 else:
                     expression_final = expression_final+'|'+ string.digits[i]
             
@@ -49,7 +51,7 @@ def prepare_expression(expression):
         if expression[1] in string.ascii_lowercase:
             for i in range(string.ascii_lowercase.index(expression[1]),string.ascii_lowercase.index(expression[3])+1):
                 if i == string.ascii_lowercase.index(expression[1]):
-                    expression_final = string.ascii_lowercase[i] 
+                   expression_final = string.ascii_lowercase[i] 
                 else:
                     expression_final = expression_final+'|'+ string.ascii_lowercase[i]
             
@@ -78,11 +80,39 @@ def prepare_expression(expression):
         char = expression[i]
         if i > 0:
             ant = expression[i-1]
-            if (isinstance(ant, int) or ant.isalpha() or ant in "&*") and (isinstance(char, int) or char.isalpha() or char == "&*") \
-            or (ant == ")") and (isinstance(char, int) or char.isalpha())\
-            or (isinstance(ant, int) or ant.isalpha()) and (char == "("):
+            if (isinstance(ant, int) or ant.isalpha() or ant in "&*") and (isinstance(char, int) or char.isalpha() or char == "&*ε") \
+            or (ant == ")") and (isinstance(char, int) or char.isalpha() or char == "&")\
+            or (isinstance(ant, int) or ant.isalpha() or ant in '*&') and (char == "("):
                 str1 = expression_final[:i+concat]
                 str2 = expression_final[i+concat:]
                 expression_final = str1 + '.' + str2
                 concat +=1
+
+   
     return expression_final
+
+
+#print(verify_expression("a.b|c|d"))
+#print(verify_expression("a.b|c|d*"))
+#print(verify_expression("a..b|c|d*"))
+#print(verify_expression("a.(b|c)|d*"))
+#print(verify_expression("a.(b|c))|d*"))
+#print(verify_expression("(a|).b"))
+#print(verify_expression("a.b|"))
+#print(verify_expression("a.a*(b.b*.a.a*.b)*"))
+#print(verify_expression("(a|b)*"))
+
+#print(prepare_expression("ab|cd|def"))
+#print(prepare_expression("a.b*ec?"))
+#print(prepare_expression("a|b?cd?"))
+#print(prepare_expression("a|b?c"))
+#print(prepare_expression("((a|b)*b(c|d))"))
+#print(prepare_expression('[0-3]+'))
+#print(prepare_expression('[a-j]+'))
+#print(prepare_expression('[2-6]+'))
+#print(prepare_expression('[d-t]+'))
+#print(prepare_expression('[0-3]*'))
+#print(prepare_expression('[b-e]*'))
+#print(prepare_expression("a.a*(b.b*.a.a*b)*"))
+#print(prepare_expression("a|&(b.b*.a.a*b)*"))
+#print(prepare_expression("a|b(ab)&)"))
