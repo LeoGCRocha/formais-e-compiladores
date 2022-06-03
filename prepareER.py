@@ -5,12 +5,12 @@ def verify_expression(expression):
     ant = ' '
     parent_level = 0
     
-    for i in range(0,len(expression)-1):
+    for i in range(0,len(expression)):
         char = expression[i]
         if char in valid_inputs:
             if i > 1:
                 ant = expression[i-1]
-                if (ant in '(|.' and char in '|.*?)') or (ant in '?*' and char in '?*'):
+                if (ant in '(|.' and char in '|.*?)') or (ant in '?*' and char in '?*') or (ant in '|.' and char in ')' or (i == (len(expression)-1) and char in '|.')):
                     return False
             if char == '(':
                 parent_level +=1
@@ -90,21 +90,22 @@ def prepare_expression(expression):
     return expression_final
 
 
-#print(verify_expression("a.b|c|d"))
-#print(verify_expression("a.b|c|d*"))
-#print(verify_expression("a..b|c|d*"))
-#print(verify_expression("a.(b|c)|d*"))
-#print(verify_expression("a.(b|c))|d*"))   
+print(verify_expression("a.b|c|d"))
+print(verify_expression("a.b|c|d*"))
+print(verify_expression("a..b|c|d*"))
+print(verify_expression("a.(b|c)|d*"))
+print(verify_expression("a.(b|c))|d*"))
+print(verify_expression("(a|).b"))
+print(verify_expression("a.b|"))
+
 #print(prepare_expression("ab|cd|def"))
 #print(prepare_expression("a.b*ec?"))
 #print(prepare_expression("a|b?cd?"))
 #print(prepare_expression("a|b?c"))
 #print(prepare_expression("((a|b)*b(c|d))"))
-#print(string.digits)
-#print(string.ascii_lowercase)
 #print(prepare_expression('[0-3]+'))
 #print(prepare_expression('[a-j]+'))
-print(prepare_expression('[2-6]+'))
-print(prepare_expression('[d-t]+'))
-print(prepare_expression('[0-3]*'))
-print(prepare_expression('[b-e]*'))
+#print(prepare_expression('[2-6]+'))
+#print(prepare_expression('[d-t]+'))
+#print(prepare_expression('[0-3]*'))
+#print(prepare_expression('[b-e]*'))
