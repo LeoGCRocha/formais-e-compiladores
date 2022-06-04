@@ -3,6 +3,7 @@ from expression import Expression
 from operators import Operators as OP
 from automata import *
 from prepareER import *
+from automataState import *
 
 class SyntaxTree:
     def __init__(self, expression):
@@ -161,11 +162,11 @@ class SyntaxTree:
         return str1 
     def stateOnList(self, listArray, label):
         for i in range (0, len(listArray)):
-            if str(listArray[i].label()) == str(label):
+            if str(listArray[i].label) == str(label):
                 return i
         return -1
     def createAutomata(self):
-        initialState = DeterministicState()
+        initialState = DeterministicState({})
         initialState.setLabel(self.toAutomataLabel(self.root().firstPos()))
         stateList = [initialState]
         finalStates = []
@@ -193,8 +194,8 @@ class SyntaxTree:
                 if dicTo[key] != [0]:
                     pos = self.stateOnList(stateList, dicTo[key])
                     if  pos == -1:
-                        dt = DeterministicState()
-                        dt.setLabel(dicTo[key])
+                        dt = DeterministicState({})
+                        dt.label = dicTo[key]
                         stateList.append(dt)
                         toVisit.append(dicTo[key])
                         state.addTransition(key, dt)
@@ -202,18 +203,18 @@ class SyntaxTree:
                         dt = stateList[pos]
                         state.addTransition(key, dt)
             if "#" in dicTo:
-                if self.stateOnList(finalStates, state.label()) == -1:
+                if self.stateOnList(finalStates, state.label) == -1:
                     finalStates.append(state)
         self.__DFA = DFA(stateList, initialState, finalStates)
     def printAutomata(self):
-        print("Estado inicial: {}".format(self.__DFA.initialState().label()))
+        print("Estado inicial: {}".format(self.__DFA.initialState.label))
         for i in self.__DFA.stateList():
             transitions = i.getTransitions()
-            print("Estado: {}".format(i.label()))
+            print("Estado: {}".format(i.label))
             for key in transitions:
-                print("{} -> {}".format(key, transitions[key].label()))
+                print("{} -> {}".format(key, transitions[key].label))
         print("Estado final: ", end="")
         for i in self.__DFA.finalStates():
-            print(i.label(), end="")        
+            print(i.label, end="")        
         print()
     
