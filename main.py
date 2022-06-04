@@ -1,6 +1,6 @@
 from utils import *
 from prepareER import *
-from automata import Automata
+from automata import *
 from syntaxtree import SyntaxTree
 # Receive a list of regular expressions from a single file
 # and create multiples .csv with the respectives ER as Automatas
@@ -26,3 +26,9 @@ if __name__ == "__main__":
     # 1) Conversao de Expressao Regular para AF
     erToAF("inputs/ertoaf.txt")
     # 2) Conversao de Automato Finito Nao Deterministico para Automato Finito Deterministico
+    automata = t3()
+    automata_to_csv("output/determinizacao1.csv", automata, automata.listOfSymbols())
+    automata = t2()
+    automata_to_csv("output/determinizacao2.csv", automata, automata.listOfSymbols())
+    automata = t1()
+    automata_to_csv("output/determinizacao3.csv", automata, automata.listOfSymbols())

@@ -58,6 +58,9 @@ class DFA(Automata):
                 print("rejected")
         return currentState
 
+    def listOfSymbols(self):
+        return list(set([transition for state in self.states for transition in state.transitions.keys()]))  
+
     # executes one step in the automata
     def __step(self, currentState, char, trace = False):
         try:
@@ -163,6 +166,7 @@ class NFA(Automata):
         return list(set(destinyStates))
 
 
+
 def t1():
     p = NonDeterministicState({})
     q = NonDeterministicState({})
@@ -181,7 +185,7 @@ def t1():
     s.addTransitions("1", [p])
 
     nfa = NFA([p,q,r,s], initial = p, final = [q, s])
-    nfa.toDFA()
+    return nfa.toDFA()
 
 def t2():
     q0 = NonDeterministicState({})

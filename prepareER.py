@@ -87,32 +87,4 @@ def prepare_expression(expression):
                 str2 = expression_final[i+concat:]
                 expression_final = str1 + '.' + str2
                 concat +=1
-
-   
     return expression_final
-
-
-#print(verify_expression("a.b|c|d"))
-#print(verify_expression("a.b|c|d*"))
-#print(verify_expression("a..b|c|d*"))
-#print(verify_expression("a.(b|c)|d*"))
-#print(verify_expression("a.(b|c))|d*"))
-#print(verify_expression("(a|).b"))
-#print(verify_expression("a.b|"))
-#print(verify_expression("a.a*(b.b*.a.a*.b)*"))
-#print(verify_expression("(a|b)*"))
-
-#print(prepare_expression("ab|cd|def"))
-#print(prepare_expression("a.b*ec?"))
-#print(prepare_expression("a|b?cd?"))
-#print(prepare_expression("a|b?c"))
-#print(prepare_expression("((a|b)*b(c|d))"))
-#print(prepare_expression('[0-3]+'))
-#print(prepare_expression('[a-j]+'))
-#print(prepare_expression('[2-6]+'))
-#print(prepare_expression('[d-t]+'))
-#print(prepare_expression('[0-3]*'))
-#print(prepare_expression('[b-e]*'))
-#print(prepare_expression("a.a*(b.b*.a.a*b)*"))
-#print(prepare_expression("a|&(b.b*.a.a*b)*"))
-#print(prepare_expression("a|b(ab)&)"))
