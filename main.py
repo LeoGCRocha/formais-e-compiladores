@@ -23,4 +23,6 @@ def erToAF(file_path):
         number += 1
 
 if __name__ == "__main__":
-    erToAF("inputs/ertoaf.txt")
+    # 1) Conversao de Expressao Regular para AF
+    # erToAF("inputs/ertoaf.txt")
+    # 2) Conversao de Automato Finito Nao Deterministico para Automato Finito Deterministico

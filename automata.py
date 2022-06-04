@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from automataState import *
 from operators import Operators as OP
+from utils import *
 import copy
 
 # automata base class. Note that this class is abstract
@@ -86,9 +87,9 @@ class NFA(Automata):
             currentStates = toProcess[index]
 
             states = self.__lambda_closure(currentStates)
-            newStateTransitionSymbols = [
+            newStateTransitionSymbols = list(set([
                 transition for state in states for transition in state.transitions.keys()
-            ]
+            ]))
             newStateTransisions = {symbol : self.__fromStatesBySymbol(states, symbol) for symbol in newStateTransitionSymbols}
             
             for symbol, s in newStateTransisions.items():
@@ -111,7 +112,7 @@ class NFA(Automata):
             newDeterministicStates.append(newState)
 
         for index, transitions in newStates.items():
-            state = newDeterministicStates[i]
+            state = newDeterministicStates[index]
             for key, value in transitions.items():
                 state.addTransition(key, newDeterministicStates[setList.index(value)])
         
@@ -130,9 +131,12 @@ class NFA(Automata):
                 break
 
             try:
-                to_visit = closure[index][OP.EPSILON]
-                closure.extend[to_visit]
-                lenClosure += len(to_visit)
+                state = closure[index]
+                to_visit = state[OP.EPSILON]
+                for i in to_visit:
+                    if i not in closure:
+                        closure.append(i)
+                        lenClosure += 1
             except KeyError:
                 pass
 
@@ -185,13 +189,35 @@ def t2():
     q4.label = "q4"
     q0.addTransitions("0", [q1])
     q0.addTransitions("1", [q2])
-    q1.addTransitions("0", [q1, q2])
+    q1.addTransitions("0", [q1, q3])
     q1.addTransitions("1", [q1])
     q2.addTransitions("0", [q2])
     q2.addTransitions("1", [q2, q4])
 
+    nfa = NFA([q0,q1,q2,q3,q4], initial = q0, final = [q1, q2])
+    return nfa.toDFA()
+
+def t3():
+    p = NonDeterministicState({})
+    q = NonDeterministicState({})
+    r = NonDeterministicState({})
+    p.label = "p"
+    q.label = "q"
+    r.label = "r"
+    p.addTransitions("&", [p,q])
+    p.addTransitions("b", [q])
+    p.addTransitions("c", [r])
+    q.addTransitions("a", [p])
+    q.addTransitions("b", [r])
+    q.addTransitions("c", [p,q])
+
+    nfa = NFA([p,q,r], initial = p, final = [r])
+    return nfa.toDFA()
+
 def main():
-    pass
+    t2Var = t3()
+    list_of_symbols = list(set([transition for state in t2Var.states for transition in state.transitions.keys()]))  
+    automata_to_csv("output/determinizacao2.csv", t2Var, list_of_symbols)
 
 if __name__ == "__main__":
     main()
