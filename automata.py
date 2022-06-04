@@ -1,31 +1,40 @@
-from abc import abstractmethod
-from abc import ABC
+from abc import ABC, abstractmethod
+from automataState import *
+from operators import Operators as OP
 import copy
 
 # automata base class. Note that this class is abstract
 class Automata(ABC):
     @abstractmethod
     def __init__(self, states, initial, final, name):
+        if states:
+            assert(isinstance(states, list))
+            if len(states):
+                assert(isinstance(states[0], BaseState))
+        
+        if initial:
+            assert(isinstance(initial, BaseState))
+
+        if final:
+            assert(isinstance(final, list))
+            if len(final):
+                assert(isinstance(final[0], BaseState))
+
+        assert(isinstance(name, str))
         self.name = name
         self.initial = initial
         self.final = final
         self.states = states
-        self.deadState = DeterministicState()
-    def initialState(sellf):
-        pass
-    def finalState(self):
-        pass
-    def stateList(self):
-        pass
+        self.deadState = DeterministicState({})
 
 # deterministic finite automata
 class DFA(Automata):
-    def __init__(self, states = [], initial = None, final = [], name = "DFADefaultName"):
+    def __init__(self, states, initial, final, name = "DFADefaultName"):
         # parent constructor
         super().__init__(states, initial, final, name)
+        isinstance(states, list)
         for state in states:
-            for value in state.transitions().values():
-                assert(not isinstance(value, list))
+            assert(isinstance(state, DeterministicState))
 
     # run the automata, given the input
     def run(self, inputString, trace = False):
@@ -44,19 +53,11 @@ class DFA(Automata):
                 print("rejected")
         return currentState
 
-    # initial state
-    def initialState(self):
-        return self.initial
-    # final states
-    def finalStates(self):
-        return self.final
-    def stateList(self):
-        return self.states
     # executes one step in the automata
     def __step(self, currentState, char, trace = False):
         try:
             nextState = currentState[char]
-        except ValueError:
+        except KeyError:
             nextState = self.__deadState
         if (trace):
             print(f"{currentState} -{char}-> {nextState}")
@@ -64,108 +65,130 @@ class DFA(Automata):
 
 # non deterministic automata
 class NFA(Automata):
-    def __init__(self, states, name = "NFADefaultName"):
-        super(Automata).__init__(self, states, name)
-
-# base class for states. Note that this class is abstract
-class BaseState(ABC):
-    @abstractmethod
-    def __init__(self):
-        # assert(isinstance(transitions, dict))
-        # self.transitions = transitions
-        # unique id for each state
-        self.__id = IdCounter.get()
-        self.__label = None
-        self.__transitions = {}
-
-    @abstractmethod
-    def addTransition(self, symbol, to):
-        self.__transitions[symbol] = to
-
-    def transitions(self):
-        return self.__transitions
-
-    def getTransitions(self):
-        return self.__transitions
+    def __init__(self, states, initial, final, name="NFADefaultName"):
+        super().__init__(states, initial, final, name)
+        isinstance(states, list)
+        for state in states:
+            assert(isinstance(state, NonDeterministicState))
     
-    def __repr__(self):
-        return self.__id
+    def toDFA(self):      
+        setList = [set([self.initial])]
+        newStates = {}
 
-    def __getitem__(self, symbol):
-        return self.__transitions[symbol]
-    
-    def label(self):
-        return self.__label
+        toProcess = [[self.initial]]
+        index = 0
+        lenProcess = 1
 
-    def setTransitions(self):
-        pass
-
-    # TODO : Padronizar
-    def setLabel(self, label):
-        self.__label = label
-
-class DeterministicState(BaseState):
-    def __init__(self):
-        super().__init__()
-    
-    def __setitem__(self, key, value):
-        self.addTransition(key, value)
-
-    def addTransition(self, symbol, to):
-        return super().addTransition(symbol, to)
-
-class NonDeterministicState(BaseState):
-    def __init__(self, transitions = {}):
-        super(BaseState).__init__(self, transitions)
-        if (transitions.values()):
-            assert(isinstance(transitions.values()[0], list))
-
-    def addTransition(self, symbol, to):
-        try:
-            self.__transitions[symbol].append(to)
-        except ValueError:
-            self.__transitions[symbol] = [to]
-
-# state of unknown type. Use this to create states without the need to know it's
-# type. Then call convertToTypedState to convert this to a deterministic or
-# non-deterministic state
-class UnknownTypeState(NonDeterministicState):
-    def __init__(self):
-        super(NonDeterministicState).__init__(self, {})
-    
-    def __convertToDeterministicState(self):
-        newState = DeterministicState()
-        for key, value in self.transitions().items():
-            newState.addTransition(key, value[0])
-        return newState
-
-    def __convertToNonDeterministicState(self):
-        newState = NonDeterministicState()
-        for key, value in self.transitions().items():
-            for v in value:
-                newState.addTransition(key, v)
-        return newState
-
-    def convertToTypedState(self):
-        deterministic = True
-        for value in self.transitions().values():
-            if len(value) > 1:
-                deterministic = False
+        while True:
+            if index == lenProcess:
                 break
-        if (deterministic):
-            self.__convertToDeterministicState()
-        else:
-            self.__convertToNonDeterministicState()
 
-# counter class
-class IdCounter:
-    counter = 0
-    # generates unique id
-    @staticmethod
-    def get():
-        r = IdCounter.counter
-        IdCounter.counter += 1
-        return r
+            currentStates = toProcess[index]
+
+            states = self.__lambda_closure(currentStates)
+            newStateTransitionSymbols = [
+                transition for state in states for transition in state.transitions.keys()
+            ]
+            newStateTransisions = {symbol : self.__fromStatesBySymbol(states, symbol) for symbol in newStateTransitionSymbols}
+            
+            for symbol, s in newStateTransisions.items():
+                setS = set(s)
+                
+                if setS not in setList:
+                    setList.append(setS)
+                    toProcess.append(s)
+                    lenProcess += 1
+            
+            stateIndex = setList.index(set(states))
+            if stateIndex not in newStates.keys():
+                newStates[stateIndex] = {key : set(newStateTransisions[key]) for key in newStateTransisions.keys()}
+            index += 1
+
+        newDeterministicStates = []
+        for i in range(len(setList)):
+            newState = DeterministicState({})
+            newState.label = str(setList[i])
+            newDeterministicStates.append(newState)
+
+        for index, transitions in newStates.items():
+            state = newDeterministicStates[i]
+            for key, value in transitions.items():
+                state.addTransition(key, newDeterministicStates[setList.index(value)])
+        
+        finals = list(filter(lambda x: len(set(self.final).intersection(x)), setList))
+        finals = list(map(lambda x: newDeterministicStates[setList.index(x)], finals))
+
+        return DFA(newDeterministicStates, newDeterministicStates[0], finals)
+
+    def __lambda_closure(self, states):
+        assert(isinstance(states, list))
+        closure = states
+        lenClosure = 1
+        index = 0
+        while 1:
+            if index == lenClosure:
+                break
+
+            try:
+                to_visit = closure[index][OP.EPSILON]
+                closure.extend[to_visit]
+                lenClosure += len(to_visit)
+            except KeyError:
+                pass
+
+            index += 1
+        # print(closure)
+        return list(set(closure))
+        
+    def __fromStatesBySymbol(self, states, symbol):
+        assert(isinstance(states, list))
+        destinyStates = []
+        for state in states:
+            try:
+                for destinyState in state[symbol]:
+                    destinyStates.append(destinyState)
+            except KeyError:
+                pass
+        return list(set(destinyStates))
+
+
+def t1():
+    p = NonDeterministicState({})
+    q = NonDeterministicState({})
+    r = NonDeterministicState({})
+    s = NonDeterministicState({})
+    p.label = "p"
+    q.label = "q"
+    r.label = "r"
+    s.label = "s"
+    p.addTransitions("0", [q, s])
+    p.addTransitions("1", [q])
+    q.addTransitions("0", [r])
+    q.addTransitions("1", [q, r])
+    r.addTransitions("0", [s])
+    r.addTransitions("1", [p])
+    s.addTransitions("1", [p])
+
+    nfa = NFA([p,q,r,s], initial = p, final = [q, s])
+    nfa.toDFA()
+
+def t2():
+    q0 = NonDeterministicState({})
+    q1 = NonDeterministicState({})
+    q2 = NonDeterministicState({})
+    q3 = NonDeterministicState({})
+    q4 = NonDeterministicState({})
+    q0.label = "q0"
+    q1.label = "q1"
+    q2.label = "q2"
+    q3.label = "q3"
+    q4.label = "q4"
+    q0.addTransitions("0", [q1])
+    q0.addTransitions("1", [q2])
+    q1.addTransitions("0", [q1, q2])
+    q1.addTransitions("1", [q1])
+    q2.addTransitions("0", [q2])
+    q2.addTransitions("1", [q2, q4])
 
 def main():
     pass
