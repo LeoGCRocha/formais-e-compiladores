@@ -37,6 +37,10 @@ class DFA(Automata):
         for state in states:
             assert(isinstance(state, DeterministicState))
 
+    def clean(self):
+        for state in self.states:
+            state.transitions.pop(OP.EPSILON, None)
+
     # run the automata, given the input
     def run(self, inputString, trace = False):
         currentState = copy.deepcopy(self.__initial)
@@ -72,11 +76,12 @@ class NFA(Automata):
         for state in states:
             assert(isinstance(state, NonDeterministicState))
     
-    def toDFA(self):      
-        setList = [set([self.initial])]
+    def toDFA(self):
+        newInitial = self.__lambda_closure([self.initial])
+        setList = [set(newInitial)]
         newStates = {}
 
-        toProcess = [[self.initial]]
+        toProcess = [newInitial]
         index = 0
         lenProcess = 1
 
@@ -90,7 +95,7 @@ class NFA(Automata):
             newStateTransitionSymbols = list(set([
                 transition for state in states for transition in state.transitions.keys()
             ]))
-            newStateTransisions = {symbol : self.__fromStatesBySymbol(states, symbol) for symbol in newStateTransitionSymbols}
+            newStateTransisions = {symbol : self.__lambda_closure(self.__fromStatesBySymbol(states, symbol)) for symbol in newStateTransitionSymbols}
             
             for symbol, s in newStateTransisions.items():
                 setS = set(s)
@@ -119,7 +124,9 @@ class NFA(Automata):
         finals = list(filter(lambda x: len(set(self.final).intersection(x)), setList))
         finals = list(map(lambda x: newDeterministicStates[setList.index(x)], finals))
 
-        return DFA(newDeterministicStates, newDeterministicStates[0], finals)
+        dfa = DFA(newDeterministicStates, newDeterministicStates[0], finals)
+        dfa.clean()
+        return dfa
 
     def __lambda_closure(self, states):
         assert(isinstance(states, list))
@@ -213,11 +220,3 @@ def t3():
 
     nfa = NFA([p,q,r], initial = p, final = [r])
     return nfa.toDFA()
-
-def main():
-    t2Var = t3()
-    list_of_symbols = list(set([transition for state in t2Var.states for transition in state.transitions.keys()]))  
-    automata_to_csv("output/determinizacao2.csv", t2Var, list_of_symbols)
-
-if __name__ == "__main__":
-    main()
