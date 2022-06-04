@@ -10,6 +10,7 @@ class SyntaxTree:
         self.__enumerateCount = 1
         self.__root = Node(OP.CONCAT, self.__build(expression), Node(OP.END))
         self.__dicSymbols = {}
+        self.__listOfSymbols = []
         self.numerateLeaves(self.__root)
         self.setNodes(self.__root)
         self.__followPosTable = []
@@ -37,11 +38,16 @@ class SyntaxTree:
                 node.setRight(self.__build(last))
         return node
 
+    def getListOfSymbols(self):
+        return self.__listOfSymbols
+
     def numerateLeaves(self, node):
         if node.isLeaf():
             node.setNum(self.__enumerateCount)
             self.__enumerateCount = self.__enumerateCount + 1
             self.__dicSymbols[node.num()] = node.symbol()
+            if node.symbol() not in self.__listOfSymbols and node.symbol() != "#":
+                self.__listOfSymbols.append(node.symbol())
         else:
             if node.left() != None:
                 self.numerateLeaves(node.left())

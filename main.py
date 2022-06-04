@@ -13,10 +13,14 @@ def erToAF(file_path):
         assert(verify_expression(er)), err
     # Create a list of automata
     automata_list = []
+    number = 0
     for er in list_of_er:
-        print("Expressão Regular: {}".format(er))
         syntax_tree = SyntaxTree(er)
-        syntax_tree.printAutomata()
         automata_list.append(syntax_tree.getAutomata())
+        # Save automata on .csv file
+        file_path = "output/automata{}.csv".format(str(number))
+        automata_to_csv(file_path, automata_list[-1], syntax_tree.getListOfSymbols())
+        number += 1
+
 if __name__ == "__main__":
     erToAF("inputs/ertoaf.txt")
