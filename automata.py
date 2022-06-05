@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from mimetypes import init
 from automataState import *
 from operators import Operators as OP
 from utils import *
@@ -119,9 +120,13 @@ class NFA(Automata):
             newStateTransitionSymbols = list(set([
                 transition for state in states for transition in state.transitions.keys()
             ]))
-            newStateTransisions = {symbol : self.__lambda_closure(self.__fromStatesBySymbol(states, symbol)) for symbol in newStateTransitionSymbols}
-            
-            for symbol, s in newStateTransisions.items():
+            try:
+                newStateTransitionSymbols.remove(OP.EPSILON)
+            except ValueError:
+                pass
+
+            newStateTransitions = {symbol : self.__lambda_closure(self.__fromStatesBySymbol(states, symbol)) for symbol in newStateTransitionSymbols}
+            for symbol, s in newStateTransitions.items():
                 setS = set(s)
                 
                 if setS not in setList:
@@ -131,7 +136,7 @@ class NFA(Automata):
             
             stateIndex = setList.index(set(states))
             if stateIndex not in newStates.keys():
-                newStates[stateIndex] = {key : set(newStateTransisions[key]) for key in newStateTransisions.keys()}
+                newStates[stateIndex] = {key : set(newStateTransitions[key]) for key in newStateTransitions.keys()}
             index += 1
 
         newDeterministicStates = []
@@ -244,20 +249,26 @@ def t3():
     return nfa.toDFA()
 
 def t4():
-    # first automata : a
+    # first automata : aa
     p = NonDeterministicState({})
     q = NonDeterministicState({})
-    p.label = "firstA"
-    q.label = "finalState"
+    r = NonDeterministicState({})
+    p.label = "1a"
+    q.label = "2a"
+    r.label = "afinal"
     p.addTransitions("a", [q])
-    nfa = NFA([p,q], initial = p, final = [q])
+    q.addTransitions("a", [r])
+    nfa = NFA([p,q,r], initial = p, final = [r])
     # second automata : bb
     x = NonDeterministicState({})
-    e = NonDeterministicState({})
-    x.label = "firstB"
-    e.label = "finalState"
-    x.addTransitions("b", [e])
-    nfa2 = NFA([x,e], initial = x, final = [e])
+    y = NonDeterministicState({})
+    z = NonDeterministicState({})
+    x.label = "1b"
+    y.label = "2b"
+    z.label = "bfinal"
+    x.addTransitions("b", [y])
+    y.addTransitions("b", [z])
+    nfa2 = NFA([x,y,z], initial = x, final = [z])
     # union by & closure
     nfa3 = nfa + nfa2
     # determinization
