@@ -1,4 +1,7 @@
-expr1 -> (ab)*
-expr2 -> a*b?
-expr3 -> [1-9]+
-expr -> c|d"expr1""expr2""expr3"
+digit -> [1-9]+
+letter -> [a-z]+
+var -> "letter"("digit"|"letter")*
+operator -> +|-|@|/
+const -> "digit"*
+factor -> ("const"|"var")
+expr -> "factor""operator""factor"
