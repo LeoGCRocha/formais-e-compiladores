@@ -1,4 +1,4 @@
-if -> if
-then -> then
-else -> else
-relop -> <|>|<=|>=|=|<>
+expr1 -> (ab)*
+expr2 -> a*b?
+expr3 -> [1-9]+
+expr -> c|d"expr1""expr2""expr3"

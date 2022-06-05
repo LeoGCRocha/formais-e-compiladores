@@ -1,5 +1,40 @@
 import string
 
+
+def resolve_dependencies():
+    language = {}
+    lines = []
+
+    with open("inputs/language.txt", "r") as file:
+        lines = file.readlines()
+        lines = list(map(lambda x : x.strip(), lines))
+
+    definitions = []
+    for line in lines:
+        definitions.append(list(map(lambda x: x.strip(), line.split("->"))))
+
+    for key, value in definitions:
+        while (1):
+            has_quotation = "\"" in value
+            if not has_quotation:
+                break
+
+            if has_quotation:
+                opening_quotation_index = value.index("\"")
+                closing_quotation_index = value[opening_quotation_index + 1:].index("\"") + opening_quotation_index + 1
+                try:
+                    definition = value[opening_quotation_index + 1 : closing_quotation_index]
+                    to = language[definition]
+                except KeyError:
+                    print(f"mal formed language. \"{definition}\" is not defined.")
+                    exit()
+                value = value[:opening_quotation_index] + "(" + to + ")" + value[closing_quotation_index + 1:]
+        
+        language[key] = prepare_expression(value)
+
+    language = { key : prepare_expression(value) for key, value in language.items()}
+    print(language)
+
 def verify_expression(expression):
     valid_inputs = string.ascii_lowercase + string.digits + '|.*?()'
     ant = ' '
@@ -88,3 +123,9 @@ def prepare_expression(expression):
                 expression_final = str1 + '.' + str2
                 concat +=1
     return expression_final
+
+def main():
+    resolve_dependencies()
+
+if __name__ == "__main__":
+    main()
