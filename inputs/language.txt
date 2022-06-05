@@ -1,7 +1,7 @@
 digit -> [1-9]+
 letter -> [a-z]+
-var -> "letter"("digit"|"letter")*
+var -> "letter".("digit"|"letter")*
 operator -> +|-|@|/
 const -> "digit"*
-factor -> ("const"|"var")
-expr -> "factor""operator""factor"
+factor -> "const"|"var"
+expr -> "factor"."operator"."factor"

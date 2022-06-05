@@ -2,6 +2,7 @@ from utils import *
 from prepareER import *
 from automata import *
 from syntaxtree import SyntaxTree
+from lexical_analyser import *
 # Receive a list of regular expressions from a single file
 # and create multiples .csv with the respectives ER as Automatas
 def erToAF(file_path):
