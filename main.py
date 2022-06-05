@@ -21,7 +21,6 @@ def erToAF(file_path):
         file_path = "outputs/automata{}.csv".format(str(number))
         automata_to_csv(file_path, automata_list[-1], syntax_tree.getListOfSymbols())
         number += 1
-
 if __name__ == "__main__":
     # 1) Conversao de Expressao Regular para AF
     erToAF("inputs/ertoaf.txt")

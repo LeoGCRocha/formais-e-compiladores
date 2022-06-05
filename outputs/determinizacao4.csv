@@ -1,6 +1,6 @@
-δ,a,b
-"->{1a, 1a1b, 1b}",['{2a}'],['{2b}']
-{2a},"['{final, afinal}']",[]
-{2b},[],"['{final, bfinal}']"
-"*{final, afinal}",[],[]
-"*{final, bfinal}",[],[]
+δ,b,a
+"->{1a, 1a1b, 1b}",['{2b}'],['{2a}']
+{2b},"['{bfinal, final}']",[]
+{2a},[],"['{afinal, final}']"
+"*{bfinal, final}",[],[]
+"*{afinal, final}",[],[]

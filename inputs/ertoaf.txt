@@ -1,4 +1,1 @@
-a.a*.(b.b*.a.a*.b)*
-a|b
-a.b|c.d
-a.aaa.bcde|f*
+(a|b)*.(c|d)*

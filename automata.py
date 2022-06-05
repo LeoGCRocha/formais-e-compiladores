@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from mimetypes import init
 from automataState import *
 from operators import Operators as OP
 from utils import *
@@ -37,7 +36,7 @@ class Automata(ABC):
         assert(isinstance(other, Automata))
         automata1 = deepcopy(self)
         automata2 = deepcopy(other)
-        # add new initial states
+        # add new initial statess
         new_initial_state = NonDeterministicState({})
         new_initial_state.label = automata1.initial.label + automata2.initial.label
         new_final_state = NonDeterministicState({})

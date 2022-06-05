@@ -1,9 +1,9 @@
 from node import Node
 from expression import Expression
 from operators import Operators as OP
-from automata import *
 from prepareER import *
 from automataState import *
+from automata import *
 
 class SyntaxTree:
     def __init__(self, expression):
@@ -157,7 +157,7 @@ class SyntaxTree:
     def followPosTable(self):
         return self.__followPosTable
     def toAutomataLabel(self, listArray):
-        str1 = ','.join(str(e) for e in listArray)
+        str1 = ', '.join(str(e) for e in listArray)
         str1 = "[{}]".format(str1)
         return str1 
     def stateOnList(self, listArray, label):
@@ -205,7 +205,9 @@ class SyntaxTree:
             if "#" in dicTo:
                 if self.stateOnList(finalStates, state.label) == -1:
                     finalStates.append(state)
-        self.__DFA = DFA(stateList, initialState, finalStates)
+                if state.label == initialState.label and self.stateOnList(finalStates, state.label) == -1:
+                    finalStates.append(state)
+        self.__DFA = DFA(stateList, initialState, finalStates, "DFADefaultName")
     def printAutomata(self):
         print("Estado inicial: {}".format(self.__DFA.initialState.label))
         for i in self.__DFA.stateList():

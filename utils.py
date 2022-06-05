@@ -15,8 +15,16 @@ def automata_to_csv(file_path, automata, list_of_symbols):
     for i in automata.states:
         dataToAdd = [i.label]
         if i.label == automata.initial.label:
-            str = "{}{}".format("->", i.label)
-            dataToAdd[0] = str
+            finalState = False
+            for final in automata.final:
+                if final.label == i.label:
+                    finalState = True
+            if finalState:
+                str = "{}{}{}".format("->", i.label, "*")
+                dataToAdd[0] = str
+            else:
+                str = "{}{}".format("->", i.label)
+                dataToAdd[0] = str
         else:
             for final in automata.final:
                 if final.label == i.label:
