@@ -30,7 +30,11 @@ class Automata(ABC):
         self.deadState = DeterministicState({})
 
     def listOfSymbols(self):
-        return list(set([transition for state in self.states for transition in state.transitions.keys()]))  
+        return list(set([transition for state in self.states for transition in state.transitions.keys()]))
+    
+    def statesLabelToId(self):
+        for state in self.states:
+            state.label = state.id
 
     def __add__(self, other):
         assert(isinstance(other, Automata))
@@ -64,6 +68,7 @@ class DFA(Automata):
     def clean(self):
         for state in self.states:
             state.transitions.pop(OP.EPSILON, None)
+        self.statesLabelToId()
 
     # run the automata, given the input
     def run(self, inputString, trace = False):
@@ -92,6 +97,24 @@ class DFA(Automata):
             print(f"{currentState} -{char}-> {nextState}")
         return nextState
 
+    def toNFA(self):
+        new_states = []
+        final_states = []
+        # Define list of new states
+        for state in self.states:
+            stateNonDeterministic = NonDeterministicState({})
+            stateNonDeterministic.label = state.label
+            new_states.append(stateNonDeterministic)
+        # Define initial state
+        initialState = new_states[self.states.index(self.initial)]
+        for position in range (0, len(self.states)):
+            for key,value in self.states[position].transitions.items():
+                new_states[position].addTransition(key, new_states[self.states.index(value)])
+        # Define final states
+        for state in self.final:
+            final_states.append(new_states[self.states.index(state)])
+        return NFA(new_states, initialState, final_states, "NFA from DFA")
+        
 # non deterministic automata
 class NFA(Automata):
     def __init__(self, states, initial, final, name="NFADefaultName"):
@@ -115,7 +138,9 @@ class NFA(Automata):
 
             currentStates = toProcess[index]
 
-            states = self.__lambda_closure(currentStates)
+            # states = self.__lambda_closure(currentStates)
+            states = currentStates
+
             newStateTransitionSymbols = list(set([
                 transition for state in states for transition in state.transitions.keys()
             ]))

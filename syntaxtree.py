@@ -3,7 +3,7 @@ from expression import Expression
 from operators import Operators as OP
 from prepareER import *
 from automataState import *
-from automata import *
+import automata as automata
 
 class SyntaxTree:
     def __init__(self, expression):
@@ -21,8 +21,18 @@ class SyntaxTree:
         self.createAutomata()
 
     def __build(self, expression):
+        if (len(expression) == 0):
+            return None
+        if (len(expression) == 1):
+            return Node(expression[0])
+
         first, last, operator = Expression.subExpressions(expression)
+        
         node = Node(operator)
+
+        if (not first and not last):
+            return node
+
         if (operator == OP.STAR):
             if len(first) == 1:
                 node.setLeft(Node(first[0]))
@@ -207,7 +217,7 @@ class SyntaxTree:
                     finalStates.append(state)
                 if state.label == initialState.label and self.stateOnList(finalStates, state.label) == -1:
                     finalStates.append(state)
-        self.__DFA = DFA(stateList, initialState, finalStates, "DFADefaultName")
+        self.__DFA = automata.DFA(stateList, initialState, finalStates, "DFADefaultName")
     def printAutomata(self):
         print("Estado inicial: {}".format(self.__DFA.initialState.label))
         for i in self.__DFA.stateList():
@@ -219,4 +229,3 @@ class SyntaxTree:
         for i in self.__DFA.finalStates():
             print(i.label, end="")        
         print()
-    

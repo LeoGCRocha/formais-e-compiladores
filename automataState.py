@@ -58,14 +58,6 @@ class NonDeterministicState(BaseState):
         assert(isinstance(to_list, list))
         for to in to_list:
             self.addTransition(symbol, to)
-       
-        # if not isinstance(to_list, list):
-        #     self.addTransition(symbol, to_list)
-        
-        # try:
-        #     self.transitions[symbol].extend(to_list)
-        # except KeyError:
-        #     self.transitions[symbol] = to_list
 
 # state of unknown type. Use this to create states without the need to know it's
 # type. Then call convertToTypedState to convert this to a deterministic or
