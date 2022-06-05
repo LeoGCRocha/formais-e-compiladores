@@ -1,5 +1,6 @@
 import csv
 from syntaxtree import *
+from prettytable import PrettyTable
 def read_er(file_path):
     er = []
     file = open(file_path, "r")
@@ -37,3 +38,17 @@ def automata_to_csv(file_path, automata, list_of_symbols):
         writer.writerow(header)
         for d in data:
             writer.writerow(d)
+
+def csv_to_table(csv_file, outpath):
+    table = PrettyTable()
+    file = open(csv_file)
+    #create header of table
+    csv_reader = csv.reader(file)
+    header = next(csv_reader)
+    table.field_names = header
+    #create rows of table
+    for row in csv_reader:
+        table.add_row(row)
+    file.close()
+    with open(outpath, 'w') as file:
+        file.write(table.get_string())
