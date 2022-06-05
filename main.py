@@ -27,8 +27,8 @@ if __name__ == "__main__":
     erToAF("inputs/ertoaf.txt")
     # 2) Conversao de Automato Finito Nao Deterministico para Automato Finito Deterministico
     automata = t3()
-    automata_to_csv("output/determinizacao1.csv", automata, automata.listOfSymbols())
+    automata_to_csv("outputs/determinizacao1.csv", automata, automata.listOfSymbols())
     automata = t2()
-    automata_to_csv("output/determinizacao2.csv", automata, automata.listOfSymbols())
+    automata_to_csv("outputs/determinizacao2.csv", automata, automata.listOfSymbols())
     automata = t1()
-    automata_to_csv("output/determinizacao3.csv", automata, automata.listOfSymbols())
+    automata_to_csv("outputs/determinizacao3.csv", automata, automata.listOfSymbols())

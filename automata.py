@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from automataState import *
 from operators import Operators as OP
 from utils import *
+from copy import deepcopy
 import copy
 
 # automata base class. Note that this class is abstract
@@ -27,9 +28,29 @@ class Automata(ABC):
         self.final = final
         self.states = states
         self.deadState = DeterministicState({})
+
     def listOfSymbols(self):
         return list(set([transition for state in self.states for transition in state.transitions.keys()]))  
 
+    def __add__(self, other):
+        assert(isinstance(other, Automata))
+        automata1 = deepcopy(self)
+        automata2 = deepcopy(other)
+        # add new initial states
+        new_initial_state = NonDeterministicState({})
+        new_initial_state.label = automata1.initial.label + automata2.initial.label
+        new_final_state = NonDeterministicState({})
+        new_final_state.label = "final"
+        new_initial_state.addTransition(OP.EPSILON, automata1.initial)
+        new_initial_state.addTransition(OP.EPSILON, automata2.initial)
+        # add new final state
+        for state in automata1.final:
+            state.addTransition(OP.EPSILON, new_final_state)
+        for state in automata2.final:
+            state.addTransition(OP.EPSILON, new_final_state)
+        automata = NFA(automata1.states + automata2.states, new_initial_state, [new_final_state], "Union Automata")
+        # Determinization
+        return automata
 
 # deterministic finite automata
 class DFA(Automata):
@@ -224,3 +245,27 @@ def t3():
 
     nfa = NFA([p,q,r], initial = p, final = [r])
     return nfa.toDFA()
+
+def t4():
+    # first automata : a
+    p = NonDeterministicState({})
+    q = NonDeterministicState({})
+    p.label = "firstA"
+    q.label = "finalState"
+    p.addTransitions("a", [q])
+    nfa = NFA([p,q], initial = p, final = [q])
+    # second automata : bb
+    x = NonDeterministicState({})
+    e = NonDeterministicState({})
+    x.label = "firstB"
+    e.label = "finalState"
+    x.addTransitions("b", [e])
+    nfa2 = NFA([x,e], initial = x, final = [e])
+    # union by & closure
+    nfa3 = nfa + nfa2
+    # determinization
+    return nfa3.toDFA()
+
+if __name__ == "__main__":
+    dfa = t4()
+    automata_to_csv("outputs/determinizacao4.csv", dfa, dfa.listOfSymbols())
