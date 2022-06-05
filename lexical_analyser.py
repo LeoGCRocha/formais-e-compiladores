@@ -11,6 +11,7 @@ class LexicalAnalyser():
         self.buildFinalAutomata()
     def buildFinalAutomata(self):
         list_of_expressions = resolve_dependencies(self.language_path)
+        print(list_of_expressions)
         # Automatas are created in the order of the list of expressions
         for key, value in list_of_expressions.items():
             # print(value)

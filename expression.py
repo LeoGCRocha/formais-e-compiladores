@@ -5,11 +5,22 @@ class Expression:
     @staticmethod
     def subExpressions(expression):
         expression = list(expression)
+
+        if len(expression) == 1:
+            char = expression[0]
+            assert(char not in (op.STAR, op.CONCAT, op.OR))
+            return None, None, char
+
         indexC, indexO = Expression.findOperatorIndex(expression)
+
         try:
             openingParenthesesIndex = expression.index("(")
         except ValueError:
             openingParenthesesIndex = -1
+
+        if openingParenthesesIndex == 0 and \
+            Expression.findClosingParentheses(expression, openingParenthesesIndex) == len(expression) - 1:
+            return Expression.subExpressions(expression[1:-1])
 
         if (openingParenthesesIndex != -1):
             index = indexO if indexO != math.inf and indexO < openingParenthesesIndex else indexC

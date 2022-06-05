@@ -30,7 +30,11 @@ class Automata(ABC):
         self.deadState = DeterministicState({})
 
     def listOfSymbols(self):
-        return list(set([transition for state in self.states for transition in state.transitions.keys()]))  
+        return list(set([transition for state in self.states for transition in state.transitions.keys()]))
+    
+    def statesLabelToId(self):
+        for state in self.states:
+            state.label = state.id
 
     def __add__(self, other):
         assert(isinstance(other, Automata))
@@ -64,6 +68,7 @@ class DFA(Automata):
     def clean(self):
         for state in self.states:
             state.transitions.pop(OP.EPSILON, None)
+        self.statesLabelToId()
 
     # run the automata, given the input
     def run(self, inputString, trace = False):
@@ -133,7 +138,9 @@ class NFA(Automata):
 
             currentStates = toProcess[index]
 
-            states = self.__lambda_closure(currentStates)
+            # states = self.__lambda_closure(currentStates)
+            states = currentStates
+
             newStateTransitionSymbols = list(set([
                 transition for state in states for transition in state.transitions.keys()
             ]))
