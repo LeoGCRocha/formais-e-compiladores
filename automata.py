@@ -172,7 +172,6 @@ class NFA(Automata):
                 pass
 
             index += 1
-        # print(closure)
         return list(set(closure))
         
     def __fromStatesBySymbol(self, states, symbol):
@@ -185,8 +184,6 @@ class NFA(Automata):
             except KeyError:
                 pass
         return list(set(destinyStates))
-
-
 
 def t1():
     p = NonDeterministicState({})
@@ -265,7 +262,3 @@ def t4():
     nfa3 = nfa + nfa2
     # determinization
     return nfa3.toDFA()
-
-if __name__ == "__main__":
-    dfa = t4()
-    automata_to_csv("outputs/determinizacao4.csv", dfa, dfa.listOfSymbols())

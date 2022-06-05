@@ -1,6 +1,6 @@
-δ,b,a
-"->{firstB, firstAfirstB, firstA}","['{finalState, final}']","['{final, finalState}']"
+δ,a,b
+"->{firstA, firstB, firstAfirstB}","['{final, finalState}']","['{final, finalState}']"
 "*{final, finalState}",[],[]
-"*{finalState, final}",[],[]
-"{firstB, firstA}","['{finalState, final}']","['{final, finalState}']"
+"{firstA, firstB}","['{final, finalState}']","['{final, finalState}']"
+"*{final, finalState}",[],[]
 *{final},[],[]

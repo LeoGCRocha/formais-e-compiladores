@@ -18,7 +18,7 @@ def erToAF(file_path):
         syntax_tree = SyntaxTree(er)
         automata_list.append(syntax_tree.getAutomata())
         # Save automata on .csv file
-        file_path = "output/automata{}.csv".format(str(number))
+        file_path = "outputs/automata{}.csv".format(str(number))
         automata_to_csv(file_path, automata_list[-1], syntax_tree.getListOfSymbols())
         number += 1
 
@@ -32,3 +32,6 @@ if __name__ == "__main__":
     automata_to_csv("outputs/determinizacao2.csv", automata, automata.listOfSymbols())
     automata = t1()
     automata_to_csv("outputs/determinizacao3.csv", automata, automata.listOfSymbols())
+    # 3) Union
+    automata = t4()
+    automata_to_csv("outputs/determinizacao4.csv", automata, automata.listOfSymbols())
