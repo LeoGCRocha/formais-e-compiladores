@@ -27,6 +27,9 @@ class Automata(ABC):
         self.final = final
         self.states = states
         self.deadState = DeterministicState({})
+    def listOfSymbols(self):
+        return list(set([transition for state in self.states for transition in state.transitions.keys()]))  
+
 
 # deterministic finite automata
 class DFA(Automata):
@@ -57,9 +60,6 @@ class DFA(Automata):
             else:
                 print("rejected")
         return currentState
-
-    def listOfSymbols(self):
-        return list(set([transition for state in self.states for transition in state.transitions.keys()]))  
 
     # executes one step in the automata
     def __step(self, currentState, char, trace = False):
