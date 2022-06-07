@@ -135,14 +135,12 @@ def prepare_expression(expression):
                 expression_final = str1 + '.' + str2
                 concat +=1
     return expression_final
-'''
+
 def main():
     resolve_dependencies()
 
 if __name__ == "__main__":
     main()
-'''
 
-print(prepare_expression("((((x)?)?)?)"))
-print(verify_expression("(((((((x)|&))|&))|&))"))
+
 
