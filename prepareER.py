@@ -1,10 +1,11 @@
 import string
 
-def resolve_dependencies(file_path):
+
+def resolve_dependencies():
     language = {}
     lines = []
 
-    with open(file_path, "r") as file:
+    with open("inputs/language.txt", "r") as file:
         lines = file.readlines()
         lines = list(map(lambda x : x.strip(), lines))
 
@@ -32,7 +33,7 @@ def resolve_dependencies(file_path):
         language[key] = prepare_expression(value)
 
     language = { key : prepare_expression(value) for key, value in language.items()}
-    return language
+    print(language)
 
 def verify_expression(expression):
     valid_inputs = string.ascii_lowercase + string.digits + '|.*?()'
@@ -96,8 +97,14 @@ def prepare_expression(expression):
     #Trata ER regulares
 
     #Resolve ?
-    for i in range(0,len(expression)): 
+    latest_parenteses = -1
+    i = 0
+    while i < len(expression_final): 
         char = expression[i]
+        
+        if char == '(':
+            latest_parenteses = i
+        
         if i > 0:
             ant = expression[i-1] 
             if (isinstance(ant, int) or ant.isalpha()) and (char == '?'):
@@ -106,8 +113,14 @@ def prepare_expression(expression):
                 str2 = expression_final[i+1+concat:]
                 expression_final = str1 + '(' + strmed + '|&)' + str2
                 concat +=3
-    concat = 0
-    expression = expression_final
+            if (ant == ")") and (char == '?'):
+                latest_parenteses += concat
+                expression_final = expression_final[0:latest_parenteses] + "(" + expression_final[latest_parenteses:i] + '|&)' + expression_final[i+1+concat:]
+                concat +=4
+
+        concat = 0
+        expression = expression_final
+        i +=1
     
     #Resolve Concatenações implicitas
     for i in range(0,len(expression)): 
@@ -116,7 +129,7 @@ def prepare_expression(expression):
             ant = expression[i-1]
             if (isinstance(ant, int) or ant.isalpha() or ant in "&*") and (isinstance(char, int) or char.isalpha() or char == "&*ε") \
             or (ant == ")") and (isinstance(char, int) or char.isalpha() or char == "&")\
-            or (isinstance(ant, int) or ant.isalpha() or ant in '*&') and (char == "("):
+            or (isinstance(ant, int) or ant.isalpha() or ant in '*&)') and (char == "("):
                 str1 = expression_final[:i+concat]
                 str2 = expression_final[i+concat:]
                 expression_final = str1 + '.' + str2
@@ -128,3 +141,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
