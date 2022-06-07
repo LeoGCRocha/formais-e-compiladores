@@ -36,7 +36,7 @@ def resolve_dependencies():
     print(language)
 
 def verify_expression(expression):
-    valid_inputs = string.ascii_lowercase + string.digits + '|.*?()'
+    valid_inputs = string.ascii_lowercase + string.digits + '|.*?()&'
     ant = ' '
     parent_level = 0
     
@@ -135,10 +135,14 @@ def prepare_expression(expression):
                 expression_final = str1 + '.' + str2
                 concat +=1
     return expression_final
-
+'''
 def main():
     resolve_dependencies()
 
 if __name__ == "__main__":
     main()
+'''
+
+print(prepare_expression("((((x)?)?)?)"))
+print(verify_expression("(((((((x)|&))|&))|&))"))
 
