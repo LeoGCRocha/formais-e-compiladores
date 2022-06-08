@@ -1,11 +1,11 @@
 import string
 
 
-def resolve_dependencies():
+def resolve_dependencies(language_path):
     language = {}
     lines = []
 
-    with open("inputs/language.txt", "r") as file:
+    with open(language_path, "r") as file:
         lines = file.readlines()
         lines = list(map(lambda x : x.strip(), lines))
 
@@ -33,7 +33,7 @@ def resolve_dependencies():
         language[key] = prepare_expression(value)
 
     language = { key : prepare_expression(value) for key, value in language.items()}
-    print(language)
+    return language
 
 def verify_expression(expression):
     valid_inputs = string.ascii_lowercase + string.digits + '|.*?()&'

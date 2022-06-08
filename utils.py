@@ -46,6 +46,7 @@ def automata_to_csv(file_path, automata, list_of_symbols):
         writer.writerow(header)
         for d in data:
             writer.writerow(d)
+    csv_to_table(file_path, file_path)
 
 def csv_to_table(csv_file, outpath):
     table = PrettyTable()

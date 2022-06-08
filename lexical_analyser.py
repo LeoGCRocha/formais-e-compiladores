@@ -2,6 +2,7 @@ from enum import auto
 from automata import *
 from syntaxtree import *
 from functools import reduce
+from prepareER import *
 class LexicalAnalyser():
     def __init__(self, language_path = "inputs/language.txt", automata_list = []):
         self.language_path = language_path
@@ -11,7 +12,6 @@ class LexicalAnalyser():
         self.buildFinalAutomata()
     def buildFinalAutomata(self):
         list_of_expressions = resolve_dependencies(self.language_path)
-        print(list_of_expressions)
         # Automatas are created in the order of the list of expressions
         for key, value in list_of_expressions.items():
             # print(value)
@@ -23,4 +23,4 @@ class LexicalAnalyser():
 
 if __name__ == "__main__":
     lexical_analyzer = LexicalAnalyser("inputs/language.txt")
-    automata_to_csv("outputs/BIGAUTOMATADONICA.csv", lexical_analyzer.DFA, lexical_analyzer.NFA.listOfSymbols())
+    automata_to_csv("outputs/AutomatoLanguages.csv", lexical_analyzer.DFA, lexical_analyzer.NFA.listOfSymbols())
