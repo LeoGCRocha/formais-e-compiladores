@@ -52,7 +52,7 @@ class Automata(ABC):
             state.addTransition(OP.EPSILON, new_final_state)
         for state in automata2.final:
             state.addTransition(OP.EPSILON, new_final_state)
-        automata = NFA(automata1.states + automata2.states, new_initial_state, [new_final_state], "Union Automata")
+        automata = NFA([new_initial_state]+automata1.states+automata2.states+[new_final_state], new_initial_state, [new_final_state], "Union Automata")
         # Determinization
         return automata
 
