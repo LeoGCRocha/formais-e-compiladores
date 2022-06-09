@@ -70,30 +70,44 @@ def prepare_expression(expression):
     concat = 0
     
     # Trata expressoes como [0-1]+ ou [a-z]*
-    if expression[0] == "[":
-        expression_final = ''
-        if expression[1] in string.digits:
-            for i in range(string.digits.index(expression[1]),string.digits.index(expression[3])+1):
-                if i == string.digits.index(expression[1]):
-                    expression_final = string.digits[i] 
-                else:
-                    expression_final = expression_final+'|'+ string.digits[i]
-            
-            if expression[5] == '*':
-                    expression_final = expression_final+'|'+ '&'
-            return expression_final
+    i = 0
+    
+    while i < len(expression_final):      
+        char = expression_final[i]
+        if char == '[':
+            latest_parenteses = i
+        
+        if i > 0:
+            if char == ']':
+                ant = expression_final[i-1]
 
-        if expression[1] in string.ascii_lowercase:
-            for i in range(string.ascii_lowercase.index(expression[1]),string.ascii_lowercase.index(expression[3])+1):
-                if i == string.ascii_lowercase.index(expression[1]):
-                    expression_final = string.ascii_lowercase[i] 
-                else:
-                    expression_final = expression_final+'|'+ string.ascii_lowercase[i]
-            
-            if expression[5] == '*':
-                    expression_final = expression_final+'|'+ '&'
-            return expression_final
+                if ant in string.digits:
+                    nums = ''
+                    for j in range(latest_parenteses,i+1):
+                        #print(j)
+                        if j != i:
+                            nums = nums+string.digits[j]
+                            nums = nums+"|"
+                        else:
+                            nums = nums+string.digits[j]
 
+                    expression_final = expression_final[0:latest_parenteses] + "(" + nums + ")" + expression_final[i+1:]
+                
+                if ant in string.ascii_lowercase:
+                    letters = ''
+                    for j in range(latest_parenteses,i+1):
+                        if j != i:
+                            letters = letters+string.ascii_lowercase[j]
+                            letters = letters+"|"
+                        else:
+                            letters = letters+string.ascii_lowercase[j]
+
+                    expression_final = expression_final[0:latest_parenteses] + "(" + letters + ")" + expression_final[i+1:]
+        i +=1
+
+    concat = 0
+    expression = expression_final
+        
     #Trata ER regulares
 
     #Resolve ?
@@ -122,6 +136,30 @@ def prepare_expression(expression):
         expression = expression_final
         i +=1
     
+    if '+' in expression_final:
+        i = 0
+        while i < len(expression_final):      
+            if char == '(':
+                latest_parenteses = i
+            
+            char = expression_final[i] 
+
+            if i > 0:
+                if char == '+':
+                    ant = expression_final[i-1]
+
+                    if (isinstance(ant, int) or ant.isalpha() or ant == '&'):
+                        expression_final = expression_final[0:i-1] + '(' + expression_final[i-1] + ')' + '.'+ '(' + expression_final[i-1] + ')*' + expression_final[i+1:]
+                    
+                    if ant == ')':
+                        expression_final = expression_final[0:latest_parenteses] + expression_final[latest_parenteses:i-1] + ').('+ expression_final[latest_parenteses:i-1] + ')*' + expression_final[i+1:]
+
+            i +=1
+    
+    concat = 0
+    i=0
+    expression = expression_final
+
     #Resolve Concatenações implicitas
     for i in range(0,len(expression)): 
         char = expression[i]
@@ -134,13 +172,12 @@ def prepare_expression(expression):
                 str2 = expression_final[i+concat:]
                 expression_final = str1 + '.' + str2
                 concat +=1
+    
     return expression_final
+
 
 def main():
     resolve_dependencies()
 
 if __name__ == "__main__":
     main()
-
-
-
