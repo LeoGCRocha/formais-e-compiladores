@@ -69,7 +69,7 @@ def prepare_expression(expression):
     ant = ''
     concat = 0
     
-    # Trata expressoes como [0-1]+ ou [a-z]*
+    # Trata expressoes como [0-1] ou [a-z]
     i = 0
     
     while i < len(expression_final):      
@@ -84,7 +84,6 @@ def prepare_expression(expression):
                 if ant in string.digits:
                     nums = ''
                     for j in range(latest_parenteses,i+1):
-                        #print(j)
                         if j != i:
                             nums = nums+string.digits[j]
                             nums = nums+"|"
@@ -136,15 +135,19 @@ def prepare_expression(expression):
         expression = expression_final
         i +=1
     
+    #Resolve casos de +
+    close_parenteses = 0
+    
     if '+' in expression_final:
         i = 0
         while i < len(expression_final):      
-            if char == '(':
-                latest_parenteses = i
             
             char = expression_final[i] 
 
             if i > 0:
+                if char == ')':
+                    close_parenteses +=1
+                
                 if char == '+':
                     ant = expression_final[i-1]
 
@@ -152,7 +155,18 @@ def prepare_expression(expression):
                         expression_final = expression_final[0:i-1] + '(' + expression_final[i-1] + ')' + '.'+ '(' + expression_final[i-1] + ')*' + expression_final[i+1:]
                     
                     if ant == ')':
-                        expression_final = expression_final[0:latest_parenteses] + expression_final[latest_parenteses:i-1] + ').('+ expression_final[latest_parenteses:i-1] + ')*' + expression_final[i+1:]
+                        k = i-1
+                        aux = 0
+                        while k:
+                            if expression_final[k] == ')':
+                                close_parenteses +=1
+                            if expression_final[k] == '(':
+                                close_parenteses -=1
+                                if close_parenteses == 0:
+                                    aux = k
+                                    break
+                            k -=1
+                        expression_final = expression_final[0:aux] + expression_final[aux:i-1] + ').'+ expression_final[aux:i-1] + ')*' + expression_final[i+1:]
 
             i +=1
     
@@ -174,7 +188,6 @@ def prepare_expression(expression):
                 concat +=1
     
     return expression_final
-
 
 def main():
     resolve_dependencies()
