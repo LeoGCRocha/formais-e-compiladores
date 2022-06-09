@@ -145,8 +145,6 @@ def prepare_expression(expression):
             char = expression_final[i] 
 
             if i > 0:
-                if char == ')':
-                    close_parenteses +=1
                 
                 if char == '+':
                     ant = expression_final[i-1]
@@ -166,6 +164,9 @@ def prepare_expression(expression):
                                     aux = k
                                     break
                             k -=1
+                        print(expression_final[0:aux])
+                        print(expression_final[aux:i-1])
+                        print(expression_final[i+1:])
                         expression_final = expression_final[0:aux] + expression_final[aux:i-1] + ').'+ expression_final[aux:i-1] + ')*' + expression_final[i+1:]
 
             i +=1
