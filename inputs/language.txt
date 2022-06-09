@@ -1,2 +1,5 @@
-digit -> a
-letter -> "digit".1
+digit -> [1-9]+
+letter -> [a-z]+
+operator -> +|-|@|/
+const -> "digit"."digit"*
+var -> "letter".("digit"|"letter")*

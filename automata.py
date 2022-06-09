@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
-from automataState import *
 from operators import Operators as OP
-from utils import *
 from copy import deepcopy
+from automataState import *
+from utils import *
 import copy
+
 
 # automata base class. Note that this class is abstract
 class Automata(ABC):
@@ -168,6 +169,7 @@ class NFA(Automata):
             newState = DeterministicState({})
             newState.label = str(setList[i])
             newDeterministicStates.append(newState)
+            newState.meaning = list(map(lambda x: x[0], list(filter([].__ne__, list(map(lambda x: x.meaning, setList[i]))))))
 
         for index, transitions in newStates.items():
             state = newDeterministicStates[index]

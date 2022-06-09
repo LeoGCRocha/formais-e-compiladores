@@ -16,6 +16,8 @@ class LexicalAnalyser():
         for key, value in list_of_expressions.items():
             # print(value)
             automata = SyntaxTree(value).getAutomata().toNFA()
+            for s in automata.final:
+                s.meaning = [key]
             self.automata_list.append(automata)
         result = reduce(Automata.__add__, self.automata_list)
         self.NFA = result

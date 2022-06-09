@@ -9,6 +9,7 @@ class BaseState(ABC):
         self.transitions = transitions
         self.id = IdCounter.get()
         self.label = None
+        self.meaning = []
 
     @abstractmethod
     def addTransition(self, symbol, to):
