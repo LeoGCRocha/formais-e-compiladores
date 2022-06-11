@@ -10,11 +10,13 @@ class LexicalAnalyser():
         self.NFA = None
         self.DFA = None
         self.buildFinalAutomata()
+        self.reservedKeys = []
     def buildFinalAutomata(self):
-        list_of_expressions = resolve_dependencies(self.language_path)
+        dependencies = resolve_dependencies(self.language_path)
+        list_of_expressions = dependencies[0]
+        self.reservedKeys = dependencies[1]
         # Automatas are created in the order of the list of expressions
         for key, value in list_of_expressions.items():
-            # print(value)
             automata = SyntaxTree(value).getAutomata().toNFA()
             for s in automata.final:
                 s.meaning = [key]
@@ -22,7 +24,7 @@ class LexicalAnalyser():
         result = reduce(Automata.__add__, self.automata_list)
         self.NFA = result
         self.DFA = self.NFA.toDFA()
-
+        print(self.reservedKeys)
 if __name__ == "__main__":
     lexical_analyzer = LexicalAnalyser("inputs/language.txt")
     automata_to_csv("outputs/csv_files/AutomatoLanguages.csv", lexical_analyzer.DFA, lexical_analyzer.DFA.listOfSymbols())

@@ -10,8 +10,16 @@ def resolve_dependencies(language_path):
         lines = list(map(lambda x : x.strip(), lines))
 
     definitions = []
+    reserved_keys = []
+    startOfComments = False
     for line in lines:
-        definitions.append(list(map(lambda x: x.strip(), line.split("->"))))
+        if ("/*" in line and "*/" in line):
+            startOfComments = True
+        else:
+            if not startOfComments:
+                definitions.append(list(map(lambda x: x.strip(), line.split("->"))))
+            else:
+                reserved_keys.append(line)
 
     for key, value in definitions:
         while (1):
@@ -33,7 +41,7 @@ def resolve_dependencies(language_path):
         language[key] = prepare_expression(value)
 
     language = { key : prepare_expression(value) for key, value in language.items()}
-    return language
+    return [language, reserved_keys]
 
 def verify_expression(expression):
     valid_inputs = string.ascii_lowercase + string.digits + '|.*?()&'
@@ -164,9 +172,6 @@ def prepare_expression(expression):
                                     aux = k
                                     break
                             k -=1
-                        print(expression_final[0:aux])
-                        print(expression_final[aux:i-1])
-                        print(expression_final[i+1:])
                         expression_final = expression_final[0:aux] + expression_final[aux:i-1] + ').'+ expression_final[aux:i-1] + ')*' + expression_final[i+1:]
 
             i +=1

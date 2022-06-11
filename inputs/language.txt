@@ -3,3 +3,8 @@ letter -> [a-z]+
 operator -> +|-|@|/
 const -> "digit"."digit"*
 var -> "letter".("digit"|"letter")*
+/* reserverd keys */
+if
+else
+then
+for 
