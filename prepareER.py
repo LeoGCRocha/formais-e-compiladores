@@ -14,10 +14,10 @@ def resolve_dependencies(language_path):
         if ("/*" in line and "*/" in line):
             startOfComments = True
         else:
-            if not startOfComments:
-                definitions.append(list(map(lambda x: x.strip(), line.split("->"))))
-            else:
-                reserved_keys.append(line)
+            splittedLine = list(map(lambda x: x.strip(), line.split("->")))
+            if startOfComments:
+                reserved_keys.append(splittedLine[0])
+            definitions.append(splittedLine)
 
     for key, value in definitions:
         while (1):
@@ -39,6 +39,7 @@ def resolve_dependencies(language_path):
         language[key] = prepare_expression(value)
 
     language = { key : prepare_expression(value) for key, value in language.items()}
+    print(language)
     return [language, reserved_keys]
 
 def verify_expression(expression):
@@ -75,22 +76,23 @@ def prepare_expression(expression):
     ant = ''
     concat = 0
     
-    # Trata expressoes como [0-1] ou [a-z]
+    # Trata expressoes como [0-1]+ ou [a-z]*
     i = 0
     
     while i < len(expression_final):      
         char = expression_final[i]
         if char == '[':
             latest_parenteses = i
+            next_element = expression_final[i+1]
         
         if i > 0:
             if char == ']':
                 ant = expression_final[i-1]
-
+                
                 if ant in string.digits:
                     nums = ''
-                    for j in range(latest_parenteses,i+1):
-                        if j != i:
+                    for j in range(string.digits.index(next_element),string.digits.index(ant)+1):
+                        if j != string.digits.index(ant):
                             nums = nums+string.digits[j]
                             nums = nums+"|"
                         else:
@@ -100,8 +102,8 @@ def prepare_expression(expression):
                 
                 if ant in string.ascii_lowercase:
                     letters = ''
-                    for j in range(latest_parenteses,i+1):
-                        if j != i:
+                    for j in range(string.ascii_lowercase.index(next_element),string.ascii_lowercase.index(ant)+1):
+                        if j != string.ascii_lowercase.index(ant):
                             letters = letters+string.ascii_lowercase[j]
                             letters = letters+"|"
                         else:
@@ -141,17 +143,15 @@ def prepare_expression(expression):
         expression = expression_final
         i +=1
     
-    #Resolve casos de +
-    close_parenteses = 0
-    
     if '+' in expression_final:
         i = 0
         while i < len(expression_final):      
+            if char == '(':
+                latest_parenteses = i
             
             char = expression_final[i] 
 
             if i > 0:
-                
                 if char == '+':
                     ant = expression_final[i-1]
 
@@ -159,18 +159,7 @@ def prepare_expression(expression):
                         expression_final = expression_final[0:i-1] + '(' + expression_final[i-1] + ')' + '.'+ '(' + expression_final[i-1] + ')*' + expression_final[i+1:]
                     
                     if ant == ')':
-                        k = i-1
-                        aux = 0
-                        while k:
-                            if expression_final[k] == ')':
-                                close_parenteses +=1
-                            if expression_final[k] == '(':
-                                close_parenteses -=1
-                                if close_parenteses == 0:
-                                    aux = k
-                                    break
-                            k -=1
-                        expression_final = expression_final[0:aux] + expression_final[aux:i-1] + ').'+ expression_final[aux:i-1] + ')*' + expression_final[i+1:]
+                        expression_final = expression_final[0:latest_parenteses] + expression_final[latest_parenteses:i-1] + ').('+ expression_final[latest_parenteses:i-1] + ')*' + expression_final[i+1:]
 
             i +=1
     

@@ -23,8 +23,11 @@ class LexicalAnalyser():
             self.automata_list.append(automata)
         result = reduce(Automata.__add__, self.automata_list)
         self.NFA = result
+        for state in self.NFA.states:
+            print(state.id, state.transitions)
         self.DFA = self.NFA.toDFA()
-        print(self.reservedKeys)
+        # for state in self.DFA.final:
+        #     print(state.id, state.meaning)
 if __name__ == "__main__":
     lexical_analyzer = LexicalAnalyser("inputs/language.txt")
     automata_to_csv("outputs/csv_files/AutomatoLanguages.csv", lexical_analyzer.DFA, lexical_analyzer.DFA.listOfSymbols())
