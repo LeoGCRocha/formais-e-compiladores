@@ -1,0 +1,13 @@
+resultado = 2000 + 22
+if resultado == 2022
+    print resultado
+endif
+variavel= teste
+print variavel
+exponencial=2^3
+if exponencial == 9
+    print 'calculo deu errado'
+else
+    print 'calculo deu certo'
+endif
+end

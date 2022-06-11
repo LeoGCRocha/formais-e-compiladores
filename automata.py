@@ -72,27 +72,31 @@ class DFA(Automata):
 
     # run the automata, given the input
     def run(self, inputString, trace = False):
-        currentState = copy.deepcopy(self.__initial)
-        for char in inputString:
-            nextState = self.__step(currentState, char, trace)
-            if (nextState == self.__deadState):
-                break
-            currentState = nextState
-
-        finalState = self.__run(inputString, trace)
-        if trace:
-            if finalState in self.__final:
-                print("accepted")
-            else:
-                print("rejected")
-        return currentState
+        currentState = copy.deepcopy(self.initial)
+        lexemesStates = []
+        inputString = inputString.split()
+        print(inputString)
+        print("##############")
+        for string in inputString:
+            lastIndexChar = 0 
+            for indexChar in range (0, len(string)):
+                nextState = self.__step(currentState, string[indexChar], trace)
+                if (nextState == self.deadState):
+                    if (currentState.id == self.initial.id):
+                        # Lexical Error
+                        raise(Exception("Erro Lexico, simbolo {} inserido nao pertence ao alfabeto.".format(string[indexChar])))
+                    lexemesStates.append([string[lastIndexChar:indexChar], currentState])
+                    lastIndexChar = indexChar
+                    currentState = copy.deepcopy(self.initial)
+                currentState = nextState
+        return lexemesStates
 
     # executes one step in the automata
     def __step(self, currentState, char, trace = False):
         try:
             nextState = currentState[char]
         except KeyError:
-            nextState = self.__deadState
+            nextState = self.deadState
         if (trace):
             print(f"{currentState} -{char}-> {nextState}")
         return nextState

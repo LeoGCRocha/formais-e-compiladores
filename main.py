@@ -30,4 +30,3 @@ if __name__ == "__main__":
     automata = t3()
     automata_to_csv("outputs/csv_files/determinizacao3.csv", automata, automata.listOfSymbols())
     csv_to_table("outputs/csv_files/determinizacao3.csv", "outputs/table_result/determinizacao3.csv")
-    

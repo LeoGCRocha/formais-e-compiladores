@@ -1,3 +1,4 @@
+from re import S
 import string
 def resolve_dependencies(language_path):
     language = {}
@@ -9,15 +10,26 @@ def resolve_dependencies(language_path):
 
     definitions = []
     reserved_keys = []
+    identificators = []
     startOfComments = False
+    startOfIdentificator = False
+
     for line in lines:
         if ("/*" in line and "*/" in line):
-            startOfComments = True
+            if startOfComments:
+                startOfIdentificator = True
+            else:
+                startOfComments = True
         else:
             splittedLine = list(map(lambda x: x.strip(), line.split("->")))
-            if startOfComments:
-                reserved_keys.append(splittedLine[0])
-            definitions.append(splittedLine)
+            if  startOfComments and not startOfIdentificator:
+                expression = prepare_expression(splittedLine[1])
+                reserved_keys.append([splittedLine[0], expression])
+            elif startOfIdentificator:
+                identificators.append(line)
+            else:
+                expression = prepare_expression(splittedLine[1])
+                definitions.append([splittedLine[0], expression])
 
     for key, value in definitions:
         while (1):
@@ -39,7 +51,7 @@ def resolve_dependencies(language_path):
         language[key] = prepare_expression(value)
 
     language = { key : prepare_expression(value) for key, value in language.items()}
-    return [language, reserved_keys]
+    return [language, reserved_keys, identificators]
 
 def verify_expression(expression):
     valid_inputs = string.ascii_lowercase + string.digits + '|.*?()&'
