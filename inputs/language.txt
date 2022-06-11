@@ -1,2 +1,9 @@
-letter -> i.f.d
+digit -> [0-9]
+letter -> [a-z]
+operator -> +|-|@|/
+const -> "digit"."digit"*
+var -> "letter".("digit"|"letter")*
+/* reserverd keys */
 if -> if
+else -> else
+then -> then

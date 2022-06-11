@@ -5,7 +5,6 @@ from automataState import *
 from utils import *
 import copy
 
-
 # automata base class. Note that this class is abstract
 class Automata(ABC):
     @abstractmethod
@@ -138,7 +137,6 @@ class NFA(Automata):
                 break
 
             currentStates = toProcess[index]
-
             # states = self.__lambda_closure(currentStates)
             states = currentStates
 
@@ -151,9 +149,10 @@ class NFA(Automata):
                 pass
 
             newStateTransitions = {symbol : self.__lambda_closure(self.__fromStatesBySymbol(states, symbol)) for symbol in newStateTransitionSymbols}
+
             for symbol, s in newStateTransitions.items():
                 setS = set(s)
-                
+
                 if setS not in setList:
                     setList.append(setS)
                     toProcess.append(s)
@@ -175,7 +174,7 @@ class NFA(Automata):
             state = newDeterministicStates[index]
             for key, value in transitions.items():
                 state.addTransition(key, newDeterministicStates[setList.index(value)])
-        
+
         finals = list(filter(lambda x: len(set(self.final).intersection(x)), setList))
         finals = list(map(lambda x: newDeterministicStates[setList.index(x)], finals))
 
@@ -186,7 +185,7 @@ class NFA(Automata):
     def __lambda_closure(self, states):
         assert(isinstance(states, list))
         closure = states
-        lenClosure = 1
+        lenClosure = len(closure)
         index = 0
         while 1:
             if index == lenClosure:
@@ -258,20 +257,27 @@ def t2():
     return nfa.toDFA()
 
 def t3():
-    p = NonDeterministicState({})
-    q = NonDeterministicState({})
-    r = NonDeterministicState({})
-    p.label = "p"
-    q.label = "q"
-    r.label = "r"
-    p.addTransitions("&", [p,q])
-    p.addTransitions("b", [q])
-    p.addTransitions("c", [r])
-    q.addTransitions("a", [p])
-    q.addTransitions("b", [r])
-    q.addTransitions("c", [p,q])
-
-    nfa = NFA([p,q,r], initial = p, final = [r])
+    s1 = NonDeterministicState({})
+    s2 = NonDeterministicState({})
+    s3 = NonDeterministicState({})
+    s4 = NonDeterministicState({})
+    s5 = NonDeterministicState({})
+    s6 = NonDeterministicState({})
+    s7 = NonDeterministicState({})
+    s1.label = "1"
+    s2.label = "2"
+    s3.label = "3"
+    s4.label = "4"
+    s5.label = "5"
+    s6.label = "6"
+    s7.label = "7"
+    s1.addTransitions(OP.EPSILON, [s2, s6])
+    s2.addTransitions("i", [s3])
+    s3.addTransitions("f", [s4])
+    s4.addTransitions(OP.EPSILON, [s5])
+    s6.addTransitions("i", [s7])
+    s7.addTransitions(OP.EPSILON, [s5])
+    nfa = NFA([s1,s2,s3,s4,s5,s6,s7], initial = s1, final = [s5])
     return nfa.toDFA()
 
 def t4():

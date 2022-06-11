@@ -39,7 +39,6 @@ def resolve_dependencies(language_path):
         language[key] = prepare_expression(value)
 
     language = { key : prepare_expression(value) for key, value in language.items()}
-    print(language)
     return [language, reserved_keys]
 
 def verify_expression(expression):
