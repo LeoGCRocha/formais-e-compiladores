@@ -1,6 +1,4 @@
 import string
-
-
 def resolve_dependencies(language_path):
     language = {}
     lines = []

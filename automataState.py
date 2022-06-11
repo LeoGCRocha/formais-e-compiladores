@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-
-
 # base class for states. Note that this class is abstract
 class BaseState(ABC):
     @abstractmethod
