@@ -1,4 +1,4 @@
-# ine5421-t1
+# Analisador Léxico 
 
 Para executar a aplicação:
 1) Execute pip3 install -r requirements.txt
