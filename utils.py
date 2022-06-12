@@ -60,3 +60,14 @@ def csv_to_table(csv_file, outpath):
     file.close()
     with open(outpath, 'w') as file:
         file.write(table.get_string())
+
+def tokens_to_txt(outpath, tokens):
+    with open(outpath, "w") as file:
+        for token in tokens:
+            file.write(f"< {token[0]}, {token[1]} >\n")
+
+def symbol_table_to_csv(outpath, table):
+    with open(outpath, "w") as file:
+        file.write("lexeme, logical meaning\n")
+        for l in table:
+            file.write(f"{l[0]}, {l[1]}\n")

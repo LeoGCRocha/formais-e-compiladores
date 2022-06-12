@@ -71,25 +71,32 @@ class DFA(Automata):
         self.statesLabelToId()
 
     # run the automata, given the input
-    def run(self, inputString, trace = False):
-        currentState = copy.deepcopy(self.initial)
-        lexemesStates = []
-        inputString = inputString.split()
-        print(inputString)
-        print("##############")
-        for string in inputString:
-            lastIndexChar = 0 
-            for indexChar in range (0, len(string)):
+    def run(self, text, trace = False):
+        lexemes = []
+        splittedText = text.split()
+        for string in splittedText:
+            # print(string)
+            lastIndexChar = 0
+            currentState = copy.deepcopy(self.initial)
+            indexChar = 0
+            while indexChar < len(string):
+            # for indexChar in range(0, len(string)):
                 nextState = self.__step(currentState, string[indexChar], trace)
                 if (nextState == self.deadState):
                     if (currentState.id == self.initial.id):
-                        # Lexical Error
-                        raise(Exception("Erro Lexico, simbolo {} inserido nao pertence ao alfabeto.".format(string[indexChar])))
-                    lexemesStates.append([string[lastIndexChar:indexChar], currentState])
+                        raise(Exception(f"caracter na posicao {indexChar} em \"{string}\" não encaixa o lexema em algum padrão"))
+                    lexemes.append([string[lastIndexChar:indexChar], currentState])
                     lastIndexChar = indexChar
                     currentState = copy.deepcopy(self.initial)
-                currentState = nextState
-        return lexemesStates
+                else:
+                    currentState = nextState
+                    indexChar += 1
+                lastState = currentState
+
+            if lastState != self.deadState:
+                lexemes.append([string[lastIndexChar:], lastState])
+            
+        return lexemes
 
     # executes one step in the automata
     def __step(self, currentState, char, trace = False):

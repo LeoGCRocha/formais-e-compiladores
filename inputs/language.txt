@@ -3,16 +3,21 @@ letter -> [a-z]
 operator -> +|-|@|/|^
 const -> "digit"."digit"*
 var -> "letter".("digit"|"letter")*
-relop -> <|>|<.=|>.=|=.=|!.=
+relop -> =.=|>.=|<.=|<|>
 assignment -> =
-/* reserverd keys */
-if -> i.f
-else -> e.l.s.e
-then -> t.h.e.n
+/* reserved keys */
+if -> if
+else -> else
+then -> then
 end -> end
 print -> print
 endif -> endif
 /* identificator */
 operator
+const
+var 
+relop
+assignment
+/* goes to symbol table */
 const
 var

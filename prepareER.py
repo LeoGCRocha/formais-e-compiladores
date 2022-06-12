@@ -1,5 +1,8 @@
 from re import S
 import string
+from threading import currentThread
+
+
 def resolve_dependencies(language_path):
     language = {}
     lines = []
@@ -9,27 +12,25 @@ def resolve_dependencies(language_path):
         lines = list(map(lambda x : x.strip(), lines))
 
     definitions = []
-    reserved_keys = []
+    reservedKeys = []
     identificators = []
-    startOfComments = False
-    startOfIdentificator = False
+    goesToSymbolTable = []
 
+
+    currentList = definitions
     for line in lines:
-        if ("/*" in line and "*/" in line):
-            if startOfComments:
-                startOfIdentificator = True
-            else:
-                startOfComments = True
-        else:
-            splittedLine = list(map(lambda x: x.strip(), line.split("->")))
-            if  startOfComments and not startOfIdentificator:
-                expression = prepare_expression(splittedLine[1])
-                reserved_keys.append([splittedLine[0], expression])
-            elif startOfIdentificator:
-                identificators.append(line)
-            else:
-                expression = prepare_expression(splittedLine[1])
-                definitions.append([splittedLine[0], expression])
+        if ("/* reserved keys */" in line):
+            currentList = reservedKeys
+            continue
+        elif ("/* identificator */" in line):
+            currentList = identificators
+            continue
+        elif ("/* goes to symbol table */" in line):
+            currentList = goesToSymbolTable
+            continue
+
+        splittedLine = list(map(lambda x: x.strip(), line.split("->")))
+        currentList.append(splittedLine)
 
     for key, value in definitions:
         while (1):
@@ -50,8 +51,12 @@ def resolve_dependencies(language_path):
         
         language[key] = prepare_expression(value)
 
+    reservedKeys = list(map(lambda x: [x[0], prepare_expression(x[0])], reservedKeys))
+    identificators = [i[0] for i in identificators]
+    goesToSymbolTable = [i[0] for i in goesToSymbolTable]
     language = { key : prepare_expression(value) for key, value in language.items()}
-    return [language, reserved_keys, identificators]
+
+    return [language, reservedKeys, identificators, goesToSymbolTable]
 
 def verify_expression(expression):
     valid_inputs = string.ascii_lowercase + string.digits + '|.*?()&'

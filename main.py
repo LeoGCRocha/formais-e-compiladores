@@ -23,6 +23,7 @@ def erToAF(file_path):
         automata_to_csv(file_path, automata_list[-1], syntax_tree.getListOfSymbols())
         csv_to_table(file_path, "outputs/table_result/automata{}.csv".format(str(number)))
         number += 1
+
 if __name__ == "__main__":
     # 1) Conversao de Expressao Regular para AF
     erToAF("inputs/ertoaf.txt")
