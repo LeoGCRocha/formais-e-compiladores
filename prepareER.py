@@ -1,7 +1,5 @@
 from re import S
 import string
-from threading import currentThread
-
 
 def resolve_dependencies(language_path):
     language = {}
