@@ -22,7 +22,6 @@ def removeEpsilonAndPrepare(productions):
             prod[key] = [x.strip() for x in split_array]
     return prod
 withoutEpsilon = removeEpsilonAndPrepare(production)
-# print(withoutEpsilon)
 def eliminateIndirectRecursion(productions):
     i = 0
     j = 0
@@ -32,7 +31,6 @@ def eliminateIndirectRecursion(productions):
             if j > i:
                 # Iterate in all sentences
                 for sentence in valueDic:
-                    # print(sentence)
                     # If the first symbol is the same as the key, then replace the first symbol
                     if sentence[0] == key:
                         # Replace if all possibilites
@@ -46,3 +44,19 @@ def eliminateIndirectRecursion(productions):
     return productions
 withoutIndirect = eliminateIndirectRecursion(withoutEpsilon)
 print(withoutIndirect)
+def eliminateDirectRecursion(productions):
+    dic_without_recursion = {}
+    for key, value in productions.items():
+        isLeftRecursive = False
+        for sentence in value:
+            if sentence[0] == key:
+                isLeftRecursive = True
+        # No resursives, just copy the sentence
+        if not isLeftRecursive:
+            dic_without_recursion[key] = value
+        else:
+            # Is left recursive, remove the first symbol
+            pass
+    return dic_without_recursion
+withoutDirect = eliminateDirectRecursion(withoutIndirect)
+print(withoutDirect)
