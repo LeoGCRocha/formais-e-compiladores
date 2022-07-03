@@ -7,9 +7,9 @@ def fileToDic(file):
         line = line.replace('\n','')  
         production = line.split('->') 
         production[0] = production[0].strip()
-        mapOfProductions[production[0]] = production[1].strip()
+        mapOfProductions[production[0]] = production[1].strip().replace(" ", "")
     return mapOfProductions
-production = fileToDic("inputs/left.txt")
+production = fileToDic("inputs/left2.txt")
 # Prepare to remove indirect
 def removeEpsilonAndPrepare(productions):
     prod = productions.copy()

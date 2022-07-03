@@ -1,3 +1,7 @@
-S -> Aa | b
-A -> bdA' | aA'
-A' -> cA' | adA' | &
+E -> TE'
+E' -> +TE' | -TE' | &
+T -> FT'
+T' -> *FT' | /FT' | &
+F -> PF'
+F' -> **PF' | &
+P -> (E) | id | cte
