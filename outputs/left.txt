@@ -1,2 +1,3 @@
 S -> Aa | b
-A -> 
+A -> aA' | bA'
+A' -> cA' | aA' | &

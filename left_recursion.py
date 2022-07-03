@@ -29,17 +29,15 @@ def eliminateIndirectRecursion(productions):
         # Remove indirect recursion
         for keyDic, valueDic in productions.items():
             if j > i:
-                values = []
                 # Iterate in all sentences
                 for sentence in valueDic:
-                    # If the first symbol is the same as the key, then replace the first symbol
                     if sentence[0] == key:
-                        # Replace if all possibilites
-                        # TODO: Fix this
-                        pass
-                    # else:
-                    #     values.append(sentence)
-                productions[keyDic] = values
+                        backup = productions[keyDic]
+                        backup.remove(sentence)
+                        # Add new values
+                        toAdd = value
+                        backup.extend(toAdd)
+                        productions[keyDic] = backup
             j = j + 1
         j = 0
         i = i + 1
