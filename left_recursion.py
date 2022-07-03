@@ -33,17 +33,19 @@ def eliminateIndirectRecursion(productions):
                 for sentence in valueDic:
                     if sentence[0] == key:
                         backup = productions[keyDic]
+                        posToAdd = backup.index(sentence)
                         backup.remove(sentence)
+                        posFixKey = sentence[1:]
                         # Add new values
-                        toAdd = value
-                        backup.extend(toAdd)
+                        toAdd = [x+posFixKey for x in value]
+                        for x in toAdd:
+                            backup.insert(posToAdd, x)
                         productions[keyDic] = backup
             j = j + 1
         j = 0
         i = i + 1
     return productions
 withoutIndirect = eliminateIndirectRecursion(withoutEpsilon)
-print(withoutIndirect)
 # Eliminate Direct Recursion
 def eliminateDirectRecursion(productions):
     dic_without_recursion = {}
