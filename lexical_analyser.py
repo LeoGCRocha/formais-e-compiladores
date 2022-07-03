@@ -74,8 +74,6 @@ class LexicalAnalyser():
                         break
         return self.tokens
 
-                    
-
 if __name__ == "__main__":
     lexical_analyzer = LexicalAnalyser("inputs/language.txt")
     automata_to_csv("outputs/csv_files/AutomatoLanguages.csv", lexical_analyzer.DFA, lexical_analyzer.DFA.listOfSymbols())
