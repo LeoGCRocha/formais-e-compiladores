@@ -1,2 +1,2 @@
-S -> Aa | b
-A -> Ac | Sd | a
+S -> Aa | Sb
+A -> Sc | d

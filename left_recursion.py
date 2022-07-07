@@ -9,7 +9,6 @@ def fileToDic(file):
         production[0] = production[0].strip()
         mapOfProductions[production[0]] = production[1].strip().replace(" ", "")
     return mapOfProductions
-production = fileToDic("inputs/left2.txt")
 # Prepare to remove indirect
 def removeEpsilonAndPrepare(productions):
     prod = productions.copy()
@@ -21,7 +20,7 @@ def removeEpsilonAndPrepare(productions):
                 split_array.remove('&')
             prod[key] = [x.strip() for x in split_array]
     return prod
-withoutEpsilon = removeEpsilonAndPrepare(production)
+# Eliminate indirect recursion
 def eliminateIndirectRecursion(productions):
     i = 0
     j = 0
@@ -45,7 +44,6 @@ def eliminateIndirectRecursion(productions):
         j = 0
         i = i + 1
     return productions
-withoutIndirect = eliminateIndirectRecursion(withoutEpsilon)
 # Eliminate Direct Recursion
 def eliminateDirectRecursion(productions):
     dic_without_recursion = {}
@@ -74,6 +72,34 @@ def eliminateDirectRecursion(productions):
             dic_without_recursion[key] = not_recursive_values
             dic_without_recursion[newKeyValue] = resursive_values
     return dic_without_recursion
+# fixFirstProd
+def fixFirstProd(productions):
+    first_value = list(productions)[0]
+    isLeftRecursives = False
+    for sentence in productions[first_value]:
+        if sentence[0] == first_value:
+            isLeftRecursive = True
+            break
+    if isLeftRecursive:
+        new_dic = productions.copy()
+        # Is left recursive, remove the first symbol
+        newKeyValue = first_value + "'"
+        resursive_values = []
+        not_recursive_values = []
+        for sentence in productions[first_value]:
+            if sentence[0] == first_value:
+                # A -> Aa 
+                resursive_values.append(sentence[1:] + newKeyValue)
+            else:
+                # E -> ab | EC
+                # E -> abE'
+                not_recursive_values.append(sentence + newKeyValue)
+        resursive_values.append("&")
+        new_dic[first_value] = not_recursive_values
+        new_dic[newKeyValue] = resursive_values
+        return new_dic
+    else:
+        return productions
 # Output dictionary
 def dicToFile(dic, file):
     f = open(file, 'w')
@@ -85,5 +111,10 @@ def dicToFile(dic, file):
         stringToWrite = stringToWrite[:-3]
         f.write(stringToWrite + "\n")
     f.close()
+# Main
+production = fileToDic("inputs/left.txt")
+withoutEpsilon = removeEpsilonAndPrepare(production)
+firstFix = fixFirstProd(withoutEpsilon)
+withoutIndirect = eliminateIndirectRecursion(firstFix)
 withoutDirect = eliminateDirectRecursion(withoutIndirect)
-dicToFile(withoutDirect, "outputs/left.txt")
+dicToFile(firstFix, "outputs/left.txt")
