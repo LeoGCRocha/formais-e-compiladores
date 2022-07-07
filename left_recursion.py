@@ -40,6 +40,7 @@ def eliminateIndirectRecursion(productions):
                         for x in toAdd:
                             backup.insert(posToAdd, x)
                         productions[keyDic] = backup
+                    break
             j = j + 1
         j = 0
         i = i + 1
@@ -75,7 +76,7 @@ def eliminateDirectRecursion(productions):
 # fixFirstProd
 def fixFirstProd(productions):
     first_value = list(productions)[0]
-    isLeftRecursives = False
+    isLeftRecursive = False
     for sentence in productions[first_value]:
         if sentence[0] == first_value:
             isLeftRecursive = True
@@ -112,9 +113,14 @@ def dicToFile(dic, file):
         f.write(stringToWrite + "\n")
     f.close()
 # Main
-production = fileToDic("inputs/left.txt")
-withoutEpsilon = removeEpsilonAndPrepare(production)
-firstFix = fixFirstProd(withoutEpsilon)
-withoutIndirect = eliminateIndirectRecursion(firstFix)
-withoutDirect = eliminateDirectRecursion(withoutIndirect)
-dicToFile(firstFix, "outputs/left.txt")
+def main():
+    pre_fix = "inputs/left_recursion/"
+    files = ["left1.txt", "left2.txt","left3.txt"]
+    for file in files:
+        productions = fileToDic(pre_fix+file)
+        productions = removeEpsilonAndPrepare(productions)
+        productions = fixFirstProd(productions)
+        productions = eliminateIndirectRecursion(productions)
+        productions = eliminateDirectRecursion(productions)
+        dicToFile(productions, "outputs/left_recursion/" + file)
+main()

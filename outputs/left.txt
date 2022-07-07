@@ -1,3 +1,0 @@
-S -> AaS'
-A -> AaS'c | d
-S' -> bS' | &
