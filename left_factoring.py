@@ -48,7 +48,9 @@ def LeftFactoring(productions):
         for key in tempo_dict:
             newDict[key] = tempo_dict[key]
     return newDict
-rules= {"S": ["ad", "ac", "b"]}
+# S -> Aa | Sb
+# A -> Sc | d
+rules= {"S": ["Aa", "Sb"], "A": ["Sc", "d"]}
 result= LeftFactoring(rules)
 for y in result:    
     print(y, "->", result[y])

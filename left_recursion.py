@@ -75,7 +75,7 @@ def eliminateDirectRecursion(productions):
     return dic_without_recursion
 # fixFirstProd
 def fixFirstProd(productions):
-    first_value = list(productions)[0]
+    first_value = list(productions)[-1]
     isLeftRecursive = False
     for sentence in productions[first_value]:
         if sentence[0] == first_value:
@@ -112,19 +112,33 @@ def dicToFile(dic, file):
         stringToWrite = stringToWrite[:-3]
         f.write(stringToWrite + "\n")
     f.close()
+# Method
+def eliminateLeftRecursion(file):
+    productions = fileToDic(file)
+    withouEpsilon = removeEpsilonAndPrepare(productions)
+    leftRecursive = True
+    while leftRecursive:
+        leftRecursive = not leftRecursive
+        withoutFirst = fixFirstProd(withouEpsilon)
+        withoutIndirect = eliminateIndirectRecursion(withoutFirst)
+        result = eliminateDirectRecursion(withoutIndirect)
+        for head in result:
+            for prod in result:
+                if head[0] == prod[0]:
+                    leftRecursive = True
+                    break
+        break
+    return result
 # Main
-def main():
+def runTests():
     pre_fix = "inputs/left_recursion/"
     files = ["left1.txt", "left2.txt", "left3.txt"]
     for file in files:
-        productions = fileToDic(pre_fix+file)
-        productions = removeEpsilonAndPrepare(productions)
-        productions = fixFirstProd(productions)
-        productions = eliminateIndirectRecursion(productions)
-        productions = eliminateDirectRecursion(productions)
+        file_path = pre_fix + file
+        productions = eliminateLeftRecursion(file_path)
         print("File " + file + ": without left recursion")
         for y in productions:
             print(y, "->", productions[y])
         dicToFile(productions, "outputs/left_recursion/" + file)
         print()
-main()
+# runTests()
