@@ -115,7 +115,7 @@ def dicToFile(dic, file):
 # Main
 def main():
     pre_fix = "inputs/left_recursion/"
-    files = ["left3.txt"]
+    files = ["left1.txt", "left2.txt", "left3.txt"]
     for file in files:
         productions = fileToDic(pre_fix+file)
         productions = removeEpsilonAndPrepare(productions)
@@ -126,4 +126,5 @@ def main():
         for y in productions:
             print(y, "->", productions[y])
         dicToFile(productions, "outputs/left_recursion/" + file)
+        print()
 main()
