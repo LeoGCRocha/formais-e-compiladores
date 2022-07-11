@@ -85,6 +85,8 @@ def fixFirstProd(productions):
         new_dic = productions.copy()
         # Is left recursive, remove the first symbol
         newKeyValue = first_value + "'"
+        while newKeyValue in new_dic:
+            newKeyValue = newKeyValue + "'"
         resursive_values = []
         not_recursive_values = []
         for sentence in productions[first_value]:

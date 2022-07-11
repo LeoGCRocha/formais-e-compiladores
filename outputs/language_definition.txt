@@ -1,3 +1,2 @@
-A -> Sc | d
-S -> daS'S'
-S' -> bS' | &
+S -> bS'
+S' -> aS' | &
