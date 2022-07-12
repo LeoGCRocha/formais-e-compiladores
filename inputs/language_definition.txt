@@ -1,1 +1,2 @@
-S -> Sa|b
+S -> A
+A -> SSd | c

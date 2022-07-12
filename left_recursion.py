@@ -19,6 +19,8 @@ def removeEpsilonAndPrepare(productions):
             if '&' in split_array:
                 split_array.remove('&')
             prod[key] = [x.strip() for x in split_array]
+        else:
+            prod[key] = [prod[key]]
     return prod
 # Eliminate indirect recursion
 def eliminateIndirectRecursion(productions):
@@ -59,6 +61,8 @@ def eliminateDirectRecursion(productions):
         else:
             # Is left recursive, remove the first symbol
             newKeyValue = key + "'"
+            while newKeyValue in dic_without_recursion:
+                newKeyValue = newKeyValue + "'"
             resursive_values = []
             not_recursive_values = []
             for sentence in value:
@@ -118,19 +122,24 @@ def dicToFile(dic, file):
 def eliminateLeftRecursion(file):
     productions = fileToDic(file)
     withouEpsilon = removeEpsilonAndPrepare(productions)
+    withoutFirst = fixFirstProd(withouEpsilon)
+    withoutIndirect = eliminateIndirectRecursion(withouEpsilon)
+    withoutDirect = eliminateDirectRecursion(withoutIndirect)
     leftRecursive = True
     while leftRecursive:
-        leftRecursive = not leftRecursive
-        withoutFirst = fixFirstProd(withouEpsilon)
-        withoutIndirect = eliminateIndirectRecursion(withoutFirst)
-        result = eliminateDirectRecursion(withoutIndirect)
-        for head in result:
-            for prod in result:
-                if head[0] == prod[0]:
+        leftRecursive = False
+        for key, value in withoutDirect.items():
+            for val in value:
+                if key == val[0]:
                     leftRecursive = True
                     break
-        break
-    return result
+        if leftRecursive:
+            withoutFirst = fixFirstProd(withoutDirect)
+            withoutIndirect = eliminateIndirectRecursion(withoutFirst)
+            withoutDirect = eliminateDirectRecursion(withoutIndirect)
+        else:
+            return withoutDirect
+    return withoutDirect
 # Main
 def runTests():
     pre_fix = "inputs/left_recursion/"
