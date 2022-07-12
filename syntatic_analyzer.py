@@ -15,4 +15,5 @@ class SyntaticAnalyzer():
 
 if __name__ == "__main__":
     syntatic_analyzer = SyntaticAnalyzer("inputs/language_definition.txt", "inputs/source.txt")
+    print(syntatic_analyzer.getProductions())
     lr.dicToFile(syntatic_analyzer.getProductions(), "outputs/language_definition.txt")
