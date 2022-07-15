@@ -1,0 +1,2 @@
+S -> acd, ac
+A -> bd, bdef

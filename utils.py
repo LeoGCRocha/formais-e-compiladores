@@ -31,6 +31,7 @@ def read_er(file_path):
         for line in file:
             er.append(line.rstrip())
     return er
+
 def automata_to_csv(file_path, automata, list_of_symbols):
     header = ["δ"]
     for x in list_of_symbols:
@@ -94,3 +95,28 @@ def symbol_table_to_csv(outpath, table):
         file.write("lexeme, logical meaning\n")
         for l in table:
             file.write(f"{l[0]}, {l[1]}\n")
+
+def language_read(file_path):
+    lines = []
+    with open(file_path, "r") as file:
+        for line in file:
+            lines.append(
+                list(map(
+                    lambda x : x.strip(), 
+                    line.rstrip().split("->")
+                ))
+            )
+    language = {
+        line[0] : list(map(
+            lambda x : x.strip(), 
+            line[1].split(",")
+        )) for line in lines
+    }
+    
+    return language
+
+def language_write(file_path, language):
+    with open(file_path, "w") as file:
+        for key, values in language.items():
+            file.write(f"{key} -> ")
+            file.write(", ".join(["".join(value) for value in values]) + "\n")
