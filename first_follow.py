@@ -123,27 +123,23 @@ def computeAllFirsts():
         # remove un-necessary spaces
         k[0] = k[0].strip()
         k[1] = k[1].strip()
+        print(k)
         rhs = k[1]
+        print (rhs)
+        # print()
         multirhs = rhs.split('|')
         # remove un-necessary spaces
         for i in range(len(multirhs)):
             multirhs[i] = multirhs[i].strip()
-            multirhs[i] = multirhs[i].split()
+            #multirhs[i] = multirhs[i].split()
         diction[k[0]] = multirhs
- 
+        print(multirhs)
+        print()
+    
+    #print(multirhs)
     print(f"\nRules: \n")
     for y in diction:
         print(f"{y}->{diction[y]}")
-    # print(f"\nAfter elimination of left recursion:\n")
- 
-    # diction = removeLeftRecursion(diction)
-    # for y in diction:
-    #     print(f"{y}->{diction[y]}")
-    # print("\nAfter left factoring:\n")
- 
-    # diction = LeftFactoring(diction)
-    # for y in diction:
-    #     print(f"{y}->{diction[y]}")
  
     # calculate first for each rule
     # - (call first() on all RHS)
@@ -165,10 +161,6 @@ def computeAllFirsts():
     key_list = list(firsts.keys())
     index = 0
     print (firsts)
-    # for gg in firsts:
-    #     print(f"first({key_list[index]}) "
-    #           f"=> {firsts.get(gg)}")
-    #     index += 1
  
  
 def computeAllFollows():
@@ -184,16 +176,10 @@ def computeAllFollows():
  
     print("\nFollows: ")
     print(follows)
-    # key_list = list(follows.keys())
-    # index = 0
-    # for gg in follows:
-    #     print(f"follow({key_list[index]})"
-    #           f" => {follows[gg]}")
-    #     index += 1
 
-rules=["S -> A b | A B c",
-       "B -> b B | A d | & ",
-       "A -> a A | &"]
+rules=["S -> Ab | ABc",
+       "B -> bB | Ad | & ",
+       "A -> aA | &"]
 nonterm_userdef=['A', 'S', 'B']
 term_userdef=['a', 'b', 'c', 'd']
 
