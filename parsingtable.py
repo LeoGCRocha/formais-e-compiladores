@@ -1,7 +1,9 @@
 from copy import deepcopy
 from operators import Operators as OP
 
-sentencas = {'E': [['T', "E'"]], "E'": [['+', "T", "E'"],['&']], "T": [['F', "T'"]],"T'": [['*', "F", "T'"],['&']],"F": [['id'],['(', "E", ")"]]}
+sentencas = {"E":["TE'"],"E'":["+TE'","&"],"T":["FT'"],"T'":["*FT'","&"],"F":["id","(E)"]}
+sentencas_trat = {'E': [['T', "E'"]], "E'": [['+', "T", "E'"],['&']], "T": [['F', "T'"]],"T'": [['*', "F", "T'"],['&']],"F": [['id'],['(', "E", ")"]]}
+
 first_list = {'E': {'(','id'}, "E'": {'+','&'}, "T": {'(', 'id'}, "T'": {'*',"&"}, "F": {'(', 'id'}}
 follow_list = {'E': {'$',')'}, "E'": {'$',')'}, "T": {'+', '$',')'}, "T'": {'+', '$',')'}, "F": {'*', '+','$', ')'}}
 terminals = ['id', '+', '*', '(', ')', '$']
@@ -19,6 +21,46 @@ non_terminals = ['E',"E'","T","T'","F"]
 #terminals = ['k', 'O', 'd', 'a', 'c', 'b', 'r','$']
 #non_terminals = ["S", "A", "A''", "C", "B", "A'"]
 
+
+def adapt_grammar(grammar):
+    #Algoritmo de adaptação da gramática
+    for key in grammar:
+        lista = []
+        for expr in grammar[key]:
+            curr = expr[0]
+            l = []
+            la = len(expr)
+            index = 1
+            if la == 1:
+                lista.append([expr])
+                continue
+            else:
+                while 1:
+                    ia = expr[index]
+
+                    if index == la - 1:
+                        if ia != "\'":
+                            l.append(curr)
+                            l.append(ia)
+                        else:
+                            l.append(curr+ia)
+                        break
+
+                    if ia != "\'":
+                        l.append(curr)
+                        curr = ia
+                    else:
+                        curr += ia
+
+                    index += 1
+
+                lista.append(l)
+            grammar[key] = lista  
+    return grammar
+
+def adapt_symbol(grammar):
+    for non_terminal, expression in grammar.items():
+        print(expression)
 
 def generate_parse_table(terminals, non_terminals, grammar, grammar_first, grammar_follow):
     parse_table = [["-"]*len(terminals) for i in range(len(non_terminals))]
@@ -38,8 +80,8 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
 
         for i in range(len(expression)):
             first_char = expression[i][0]
-            print("Expression = %s"%expression)
-            print("First Char = %s"%first_char)
+            #print("Expression = %s"%expression)
+            #print("First Char = %s"%first_char)
             
             # Se o primeiro char é um não terminal
             
@@ -105,4 +147,4 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
     
     return(parse_table)
 
-table = generate_parse_table(terminals, non_terminals,sentencas, first_list, follow_list)
+table = generate_parse_table(terminals, non_terminals,adapt_grammar(sentencas), first_list, follow_list)
