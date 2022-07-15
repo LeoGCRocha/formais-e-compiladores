@@ -123,18 +123,13 @@ def computeAllFirsts():
         # remove un-necessary spaces
         k[0] = k[0].strip()
         k[1] = k[1].strip()
-        print(k)
         rhs = k[1]
-        print (rhs)
-        # print()
         multirhs = rhs.split('|')
         # remove un-necessary spaces
         for i in range(len(multirhs)):
             multirhs[i] = multirhs[i].strip()
             #multirhs[i] = multirhs[i].split()
         diction[k[0]] = multirhs
-        print(multirhs)
-        print()
     
     #print(multirhs)
     print(f"\nRules: \n")
@@ -177,11 +172,21 @@ def computeAllFollows():
     print("\nFollows: ")
     print(follows)
 
-rules=["S -> Ab | ABc",
-       "B -> bB | Ad | & ",
-       "A -> aA | &"]
+def filetoDic():
+    file = 'inputs/first_follow.txt'
+    f = open(file, 'r')
+    for line in f:
+        rules.append(line)
+
+def searchNonTerm():
+    print()
+def searchTerm():
+    print()
+
+rules = []
+filetoDic()
 nonterm_userdef=['A', 'S', 'B']
-term_userdef=['a', 'b', 'c', 'd']
+term_userdef=['a', 'b', 'c', 'd', "k"]
 
 diction = {}
 firsts = {}

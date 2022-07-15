@@ -1,0 +1,3 @@
+S-> Ab | ABc | k
+B -> bB | Ad | &
+A -> aA | &
