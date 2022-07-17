@@ -5,4 +5,3 @@ T' -> *FT' | /FT' | &
 F -> PF'
 F' -> **PF' | &
 P -> (E) | id | cte
-S

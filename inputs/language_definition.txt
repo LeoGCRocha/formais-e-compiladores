@@ -1,2 +1,7 @@
-S -> A
-A -> SSd | c
+P -> bSe
+S -> AR
+R -> AR | @
+A -> a=E;
+E -> FT
+T -> +FT | @
+F -> (E) | a | r

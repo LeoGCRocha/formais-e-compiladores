@@ -10,10 +10,11 @@ class SyntaticAnalyzer():
         self.__productions = lr.eliminateLeftRecursion(self.__lanuage_definition)
         # Read production and remove left factoring
         # self.__productions = lr.eliminateLeftFactoring(self.__productions)
+        
+
     def getProductions(self):
         return self.__productions
 
 if __name__ == "__main__":
     syntatic_analyzer = SyntaticAnalyzer("inputs/language_definition.txt", "inputs/source.txt")
-    print(syntatic_analyzer.getProductions())
     lr.dicToFile(syntatic_analyzer.getProductions(), "outputs/language_definition.txt")
