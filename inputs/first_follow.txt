@@ -1,3 +1,5 @@
-S-> Ab | ABc | k
-B -> bB | Ad | &
-A -> aA | &
+S -> BA
+A -> aBA | &
+B -> DC
+C -> bDC | &
+D -> cSc | d

@@ -176,17 +176,55 @@ def filetoDic():
     file = 'inputs/first_follow.txt'
     f = open(file, 'r')
     for line in f:
-        rules.append(line)
+        rules.append(line.rstrip())
 
 def searchNonTerm():
-    print()
+    len_rules = len(rules)
+    for i in range (len_rules):
+        len_rule = len(rules[i])
+        for j in range (len_rule):
+            k = rules[i][j]
+            if k != k.lower():
+                nonterm_userdef.append(k)
+
+
 def searchTerm():
-    print()
+    len_rules = len(rules)
+    for i in range (len_rules):
+        len_rule = len(rules[i])
+        for j in range (len_rule):
+            k = rules[i][j]
+            if k == k.lower():
+                term_userdef.append(k)
+    # novo = []
+    # for x in term_userdef:
+    #     item = x
+    #     for y in ['-', '>', '&', ' ']:
+    #         item = item.replace(y, "")
+    #     novo.append(item)
+    # print(novo)
+
+def removeRepeated(lista):
+    l = []
+    for i in lista:
+        if i not in l:
+            l.append(i)
+    l.sort()
+    return l
 
 rules = []
+nonterm_userdef = []
+term_userdef = []
+
 filetoDic()
-nonterm_userdef=['A', 'S', 'B']
-term_userdef=['a', 'b', 'c', 'd', "k"]
+searchNonTerm()
+searchTerm()
+
+# print(rules)
+# print(nonterm_userdef)
+# print(term_userdef)
+# nonterm_userdef=['A', 'S', 'B']
+#term_userdef=['a', 'b', 'c', 'd', "k"]
 
 diction = {}
 firsts = {}
