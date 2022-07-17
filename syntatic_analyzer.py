@@ -19,7 +19,7 @@ class SyntaticAnalyzer():
         # Read production and remove left factoring
         # self.__productions = lr.eliminateLeftFactoring(self.__productions)
         # First & Follow
-        arrayResults = fp.generateFirstAndFollow("outputs/language_definition.txt")
+        arrayResults = fp.generateFirstAndFollow("outputs/language_definition.txt", self.__productions)
         # Save all first and follows
         self.__first = arrayResults[0]
         self.__follows = arrayResults[1]
@@ -31,7 +31,6 @@ class SyntaticAnalyzer():
         pt.parseToCsv(self.__table, self.__nt, self.__t, "outputs/parse_table.csv")
     def getProductions(self):
         return self.__productions
-
 if __name__ == "__main__":
     syntatic_analyzer = SyntaticAnalyzer("inputs/language_definition.txt", "inputs/source.txt")
     lr.dicToFile(syntatic_analyzer.getProductions(), "outputs/language_definition.txt")

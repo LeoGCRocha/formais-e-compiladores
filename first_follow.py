@@ -143,15 +143,9 @@ def filetoDic(file, rules):
     for line in f:
         rules.append(line.rstrip())
 
-def searchNonTerm(nonterm_userdef, rules):
-    len_rules = len(rules)
-    for i in range (len_rules):
-        len_rule = len(rules[i])
-        for j in range (len_rule):
-            k = rules[i][j]
-            if k != k.lower():
-                if k not in nonterm_userdef:
-                    nonterm_userdef.append(k)
+def searchNonTerm(nonterm_userdef, productions):
+    for key in productions.keys():
+        nonterm_userdef.append(key)
 
 def searchTerm(term_userdef, rules):
     for sentence in rules:
@@ -171,13 +165,13 @@ def removeRepeated(lista):
     l.sort()
     return l
     
-def generateFirstAndFollow(file):
+def generateFirstAndFollow(file, productions):
     rules = []
     nonterm_userdef = []
     term_userdef = []
     # Prepare Gramar
     filetoDic(file, rules)
-    searchNonTerm(nonterm_userdef, rules)
+    searchNonTerm(nonterm_userdef, productions)
     searchTerm(term_userdef, rules)
     # Generate Firsts
     diction = {}
