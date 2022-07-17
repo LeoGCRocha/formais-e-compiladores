@@ -1,5 +1,7 @@
 from copy import deepcopy
 from operators import Operators as OP
+import csv
+import utils
 
 sentencas = {"E":["TE'"],"E'":["+TE'","&"],"T":["FT'"],"T'":["*FT'","&"],"F":["id","(E)"]}
 sentencas_trat = {'E': [['T', "E'"]], "E'": [['+', "T", "E'"],['&']], "T": [['F', "T'"]],"T'": [['*', "F", "T'"],['&']],"F": [['id'],['(', "E", ")"]]}
@@ -20,7 +22,6 @@ non_terminals = ['E',"E'","T","T'","F"]
 #follow_list = {'S': {'$'}, 'A': {'k'}, "A''": {'k'}, 'C': {'k', 'd', 'c'}, 'B': {'k', 'd', 'c'}, "A'": {'k'}}
 #terminals = ['k', 'O', 'd', 'a', 'c', 'b', 'r','$']
 #non_terminals = ["S", "A", "A''", "C", "B", "A'"]
-
 
 def adapt_grammar(grammar):
     #Algoritmo de adaptação da gramática
@@ -57,10 +58,6 @@ def adapt_grammar(grammar):
                 lista.append(l)
             grammar[key] = lista  
     return grammar
-
-def adapt_symbol(grammar):
-    for non_terminal, expression in grammar.items():
-        print(expression)
 
 def generate_parse_table(terminals, non_terminals, grammar, grammar_first, grammar_follow):
     parse_table = [["-"]*len(terminals) for i in range(len(non_terminals))]
@@ -129,9 +126,7 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
                         grammar2 = deepcopy(grammar)
             
             # Se o primeiro char é um &
-                     
             if first_char == OP.EPSILON:
-               
                 #Percorremos a expressão NT -> NT | &
                 # Na iteração que o first_char = &
                 # Ex: A -> Bc | &
@@ -142,9 +137,24 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
                     indexNT = non_terminals.index(non_terminal)
                     parse_table[indexNT][indexT] = {non_terminal: OP.EPSILON}
     
-    for i in range(len(non_terminals)):
-       print(parse_table[i])
-    
+    # for i in range(len(non_terminals)):
+    #     print(parse_table[i])
+    # print("thiago chavez apenas")
+    # print(parse_table)
     return(parse_table)
 
-table = generate_parse_table(terminals, non_terminals,adapt_grammar(sentencas), first_list, follow_list)
+# table = generate_parse_table(terminals, non_terminals,adapt_grammar(sentencas), first_list, follow_list)
+def parseToCsv(table, non_terminals, terminals, file):
+    header = [" "]
+    for symbol in terminals:
+        header.append(symbol)
+    # parseToCsv
+    with open(file, 'w', encoding='UTF8') as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        for i in range(len(non_terminals)):
+            row = [non_terminals[i]]
+            for element in table[i]:
+                row.append(element)
+            writer.writerow(row)
+    utils.csv_to_table("outputs/parse_table.csv", "outputs/csv_files/parse_table.csv")
