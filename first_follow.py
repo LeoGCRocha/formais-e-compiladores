@@ -1,7 +1,5 @@
 # pass rule in first function
-def first(rule):
-    global rules, nonterm_userdef, \
-        term_userdef, diction, firsts
+def first(rule, start_symbol, rules, nonterm_userdef, term_userdef, diction, firsts, follows):
     # condição base de recursão
     # (para terminal ou epsilon)
     if len(rule) != 0 and (rule is not None):
@@ -9,7 +7,6 @@ def first(rule):
             return rule[0]
         elif rule[0] == '&':
             return '&'
- 
     # Condição para não-terminais
     if len(rule) != 0:
         if rule[0] in list(diction.keys()):
@@ -17,7 +14,7 @@ def first(rule):
             fres = []
             rhs_rules = diction[rule[0]]
             for itr in rhs_rules:
-                indivRes = first(itr)
+                indivRes = first(itr, start_symbol, rules, nonterm_userdef, term_userdef, diction, firsts, follows) 
                 if type(indivRes) is list:
                     for i in indivRes:
                         fres.append(i)
@@ -47,26 +44,18 @@ def first(rule):
                 # - keep it in result of first
                 fres.append('&')
                 return fres
- 
- 
+
 # calculation of follow
 # use 'rules' list, and 'diction' dict from above
- 
 # follow function input is the split result on
 # - Non-Terminal whose Follow we want to compute
-def follow(nt):
-    global start_symbol, rules, nonterm_userdef, \
-        term_userdef, diction, firsts, follows
-    # for start symbol return $ (recursion base case)
- 
+def follow(nt, start_symbol, rules, nonterm_userdef, term_userdef, diction, firsts, follows):
     solset = set()
     if nt == start_symbol:
         # return '$'
         solset.add('$')
- 
     # check all occurrences
     # solset - is result of computed 'follow' so far
- 
     # For input, check in all rules
     for curNT in diction:
         rhs = diction[curNT]
@@ -82,14 +71,14 @@ def follow(nt):
                     if len(subrule) != 0:
                         # compute first if symbols on
                         # - RHS of target Non-Terminal exists
-                        res = first(subrule)
+                        res = first(subrule, start_symbol, rules, nonterm_userdef, term_userdef, diction, firsts, follows)
                         # if epsilon in result apply rule
                         # - (A->aBX)- follow of -
                         # - follow(B)=(first(X)-{ep}) U follow(A)
                         if '&' in res:
                             newList = []
                             res.remove('&')
-                            ansNew = follow(curNT)
+                            ansNew = follow(curNT, start_symbol, rules, nonterm_userdef, term_userdef, diction, firsts, follows)
                             if ansNew != None:
                                 if type(ansNew) is list:
                                     newList = res + ansNew
@@ -103,8 +92,7 @@ def follow(nt):
                         # - and take follow of LHS
                         # only if (NT in LHS)!=curNT
                         if nt != curNT:
-                            res = follow(curNT)
- 
+                            res = follow(curNT, start_symbol, rules, nonterm_userdef, term_userdef, diction, firsts, follows)
                     # add follow result in set form
                     if res is not None:
                         if type(res) is list:
@@ -113,11 +101,7 @@ def follow(nt):
                         else:
                             solset.add(res)
     return list(solset)
- 
- 
-def computeAllFirsts():
-    global rules, nonterm_userdef, \
-        term_userdef, diction, firsts
+def computeAllFirsts(start_symbol, rules, nonterm_userdef, term_userdef, diction, firsts, follows):
     for rule in rules:
         k = rule.split("->")
         # remove un-necessary spaces
@@ -129,80 +113,49 @@ def computeAllFirsts():
         for i in range(len(multirhs)):
             multirhs[i] = multirhs[i].strip()
             #multirhs[i] = multirhs[i].split()
-        diction[k[0]] = multirhs
-    
-    #print(multirhs)
-    print(f"\nRules: \n")
-    for y in diction:
-        print(f"{y}->{diction[y]}")
- 
+        diction[k[0]] = multirhs 
     # calculate first for each rule
     # - (call first() on all RHS)
     for y in list(diction.keys()):
         t = set()
         for sub in diction.get(y):
-            res = first(sub)
+            res = first(sub, start_symbol, rules, nonterm_userdef, term_userdef, diction, firsts, follows)
             if res != None:
                 if type(res) is list:
                     for u in res:
                         t.add(u)
                 else:
                     t.add(res)
- 
         # save result in 'firsts' list
         firsts[y] = t
- 
-    print("\nFirsts: ")
-    key_list = list(firsts.keys())
-    index = 0
-    print (firsts)
- 
- 
-def computeAllFollows():
-    global start_symbol, rules, nonterm_userdef,\
-        term_userdef, diction, firsts, follows
+
+def computeAllFollows(start_symbol, rules, nonterm_userdef, term_userdef, diction, firsts, follows):
     for NT in diction:
         solset = set()
-        sol = follow(NT)
+        sol = follow(NT, start_symbol, rules, nonterm_userdef, term_userdef, diction, firsts, follows)
         if sol is not None:
             for g in sol:
                 solset.add(g)
         follows[NT] = solset
- 
-    print("\nFollows: ")
-    print(follows)
 
-def filetoDic():
-    file = 'inputs/first_follow.txt'
+def filetoDic(file, rules):
     f = open(file, 'r')
     for line in f:
         rules.append(line.rstrip())
 
-def searchNonTerm():
-    len_rules = len(rules)
-    for i in range (len_rules):
-        len_rule = len(rules[i])
-        for j in range (len_rule):
-            k = rules[i][j]
-            if k != k.lower():
-                nonterm_userdef.append(k)
+def searchNonTerm(nonterm_userdef, productions):
+    for key in productions.keys():
+        nonterm_userdef.append(key)
 
-
-def searchTerm():
-    len_rules = len(rules)
-    for i in range (len_rules):
-        len_rule = len(rules[i])
-        for j in range (len_rule):
-            k = rules[i][j]
-            if k == k.lower():
-                term_userdef.append(k)
-    # novo = []
-    # for x in term_userdef:
-    #     item = x
-    #     for y in ['-', '>', '&', ' ']:
-    #         item = item.replace(y, "")
-    #     novo.append(item)
-    # print(novo)
+def searchTerm(term_userdef, rules):
+    for sentence in rules:
+        fixSentence = sentence.split("->")
+        for atual in fixSentence:
+            for eachChar in atual:
+                if eachChar == eachChar.lower():
+                    if eachChar != " " and eachChar != "|":
+                        if eachChar not in term_userdef:
+                            term_userdef.append(eachChar)
 
 def removeRepeated(lista):
     l = []
@@ -211,25 +164,20 @@ def removeRepeated(lista):
             l.append(i)
     l.sort()
     return l
-
-rules = []
-nonterm_userdef = []
-term_userdef = []
-
-filetoDic()
-searchNonTerm()
-searchTerm()
-
-# print(rules)
-# print(nonterm_userdef)
-# print(term_userdef)
-# nonterm_userdef=['A', 'S', 'B']
-#term_userdef=['a', 'b', 'c', 'd', "k"]
-
-diction = {}
-firsts = {}
-follows = {}
-
-computeAllFirsts()
-start_symbol = list(diction.keys())[0]
-computeAllFollows()
+    
+def generateFirstAndFollow(file, productions):
+    rules = []
+    nonterm_userdef = []
+    term_userdef = []
+    # Prepare Gramar
+    filetoDic(file, rules)
+    searchNonTerm(nonterm_userdef, productions)
+    searchTerm(term_userdef, rules)
+    # Generate Firsts
+    diction = {}
+    firsts = {}
+    follows = {}
+    computeAllFirsts("@", rules, nonterm_userdef, term_userdef, diction, firsts, follows)
+    start_symbol = list(diction.keys())[0]
+    computeAllFollows(start_symbol, rules, nonterm_userdef, term_userdef, diction, firsts, follows)
+    return [firsts, follows, nonterm_userdef, term_userdef]
