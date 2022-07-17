@@ -1,6 +1,3 @@
-S -> aS'
-S' -> cS''
-S'' -> d, &
-A -> bA'
-A' -> dA''
-A'' -> &, ef
+S -> idS', b
+S' -> &, a
+A -> b, c

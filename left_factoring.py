@@ -1,15 +1,19 @@
+from tracemalloc import start
 from operators import Operators as OP
 from files import Files
 from utils import *
 
-def left_factoring(language):
+def left_factoring(language, multiple_symbols_identifiers):
     # replace empty productions to epsilon
     for key, value in language.items():
         language[key] = list(map(lambda x: x if x != "" else OP.EPSILON, value))
 
     # one time factored language
     new_language = {}
-    
+
+    # stores new rule symbols
+    new_symbols = []
+
     # iterate through all symbols (keys) and productions
     for key, productions in language.items():
         # productions: [['a', 'S'], 'b', ...]
@@ -20,11 +24,22 @@ def left_factoring(language):
 
         # builds subproductions 
         for subproduction in productions:
-            if subproduction[0] not in list(subproductions.keys()):
-                subproductions[subproduction[0]] = [subproduction]
-            else:
-                subproductions[subproduction[0]].append(subproduction)
+            starts_with_msi = False
+            for msi in multiple_symbols_identifiers:
+                if subproduction.startswith(msi):
+                    starts_with_msi = True
+                    break
 
+            if (starts_with_msi):
+                if msi not in list(subproductions.keys()):
+                    subproductions[msi] = [subproduction]
+                else:
+                    subproductions[msi].append(subproduction)
+            else:
+                if subproduction[0] not in list(subproductions.keys()):
+                    subproductions[subproduction[0]] = [subproduction]
+                else:
+                    subproductions[subproduction[0]].append(subproduction)
         # stores new productions of currrent key
         new_rule = []
 
@@ -41,6 +56,8 @@ def left_factoring(language):
                     or (new_rule_symbol in new_subrules.keys()):
                     new_rule_symbol += "'"
 
+                new_symbols.append(new_rule_symbol)
+
                 # append the left factored result
                 # now after term_key comes the new production
                 new_rule.append([term_key, new_rule_symbol])
@@ -48,7 +65,7 @@ def left_factoring(language):
                 # fixes old productions to fit in new production
                 ex_rules = []
                 for g in same_key:
-                    ex_rules.append(g[1:])
+                    ex_rules.append(g[len(term_key):])
                 new_subrules[new_rule_symbol] = ex_rules
             else:
                 # no left factoring required
@@ -60,10 +77,19 @@ def left_factoring(language):
         # add newly generated rules after left factoring
         for key in new_subrules:
             new_language[key] = new_subrules[key]
+    
+    # fixes new_language values format
+    # from S -> [[a, b], c]
+    # to S -> [ab, c]
+    new_language = {
+        key : list(map(
+            lambda x : "".join(x), new_language[key]
+        )) for key in new_language.keys()
+    }
 
     # call left_factoring until no more changes are detected
     if (language != new_language):
-        return left_factoring(new_language)
+        return left_factoring(new_language, multiple_symbols_identifiers+new_symbols)
 
     return new_language
 
@@ -73,8 +99,8 @@ def test():
     #     "A": ["bd", "bdef"],
     # }
     # language = {"S": ["c", "a", "b"]}
-    language = language_read(Files.IN_LEFT_FACTORING1)
-    result = left_factoring(language)
+    language, terminals = language_read(Files.IN_LEFT_FACTORING1)
+    result = left_factoring(language, terminals)
     language_write(Files.OUT_LEFT_FACTORING1, result)
     # result= left_factoring(language)
     # for y in result:    

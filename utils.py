@@ -1,4 +1,4 @@
-import csv
+import csv, uuid, copy
 from syntaxtree import *
 from prettytable import PrettyTable
 from files import *
@@ -100,12 +100,15 @@ def language_read(file_path):
     lines = []
     with open(file_path, "r") as file:
         for line in file:
-            lines.append(
-                list(map(
-                    lambda x : x.strip(), 
-                    line.rstrip().split("->")
-                ))
-            )
+            if line[:9] == 'terminals':
+                terminals = line.split()[2:]
+            else:
+                lines.append(
+                    list(map(
+                        lambda x : x.strip(), 
+                        line.rstrip().split("->")
+                    ))
+                )
     language = {
         line[0] : list(map(
             lambda x : x.strip(), 
@@ -113,7 +116,7 @@ def language_read(file_path):
         )) for line in lines
     }
     
-    return language
+    return language, terminals
 
 def language_write(file_path, language):
     with open(file_path, "w") as file:

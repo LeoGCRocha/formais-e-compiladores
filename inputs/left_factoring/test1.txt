@@ -1,2 +1,3 @@
-S -> acd, ac
-A -> bd, bdef
+S -> id, ida, b
+A -> b, c
+terminals = id
