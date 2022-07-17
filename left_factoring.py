@@ -1,4 +1,3 @@
-from tracemalloc import start
 from operators import Operators as OP
 from files import Files
 from utils import *

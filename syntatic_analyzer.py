@@ -1,6 +1,7 @@
 import left_recursion as lr
 import first_follow as fp
 import parsingtable as pt
+import left_factoring as lf
 import copy
 class SyntaticAnalyzer():
     def __init__(self, language_definition = "inputs/language_definition.txt", source = "inputs/source.txt"):
@@ -17,7 +18,7 @@ class SyntaticAnalyzer():
         # Read language definition file and remove left recursion
         self.__productions = lr.eliminateLeftRecursion(self.__lanuage_definition)
         # Read production and remove left factoring
-        # self.__productions = lr.eliminateLeftFactoring(self.__productions)
+        # self.__productions = lf.leftFactoring(self.__productions)
         # First & Follow
         arrayResults = fp.generateFirstAndFollow("outputs/language_definition.txt", self.__productions)
         # Save all first and follows
