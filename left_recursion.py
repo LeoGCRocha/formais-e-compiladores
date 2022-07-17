@@ -1,8 +1,9 @@
 # Assert
 # Grammar without e-production and without circular productions
+from collections import OrderedDict
 def fileToDic(file):
     f = open(file)
-    mapOfProductions = {}
+    mapOfProductions = OrderedDict()
     for line in f:
         line = line.replace('\n','')  
         production = line.split('->') 
@@ -49,7 +50,7 @@ def eliminateIndirectRecursion(productions):
     return productions
 # Eliminate Direct Recursion
 def eliminateDirectRecursion(productions):
-    dic_without_recursion = {}
+    dic_without_recursion = OrderedDict()
     for key, value in productions.items():
         isLeftRecursive = False
         for sentence in value:
@@ -147,9 +148,5 @@ def runTests():
     for file in files:
         file_path = pre_fix + file
         productions = eliminateLeftRecursion(file_path)
-        print("File " + file + ": without left recursion")
-        for y in productions:
-            print(y, "->", productions[y])
         dicToFile(productions, "outputs/left_recursion/" + file)
-        print()
-# runTests()
+runTests()

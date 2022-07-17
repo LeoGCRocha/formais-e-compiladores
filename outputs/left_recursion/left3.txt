@@ -1,7 +1,8 @@
 E -> TE'
-F -> PF'
 E' -> +TE' | -TE' | &
-P -> (E) | id | cte
 T -> FT'
-F' -> **PF' | &
 T' -> *FT' | /FT' | &
+F -> PF'
+F' -> **PF' | &
+P -> (E) | id | cte
+S

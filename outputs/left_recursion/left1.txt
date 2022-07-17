@@ -1,3 +1,4 @@
-A -> Sc | d
-S -> daS'
-S' -> caS' | bS' | &
+S -> AaS'
+S' -> bS' | &
+A -> SbScA' | dA'
+A' -> aScA' | &
