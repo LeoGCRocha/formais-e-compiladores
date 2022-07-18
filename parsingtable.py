@@ -1,21 +1,20 @@
 from copy import deepcopy
 from operators import Operators as OP
-import csv
-import utils
 
-sentencas = {"E":["TE'"],"E'":["+TE'","&"],"T":["FT'"],"T'":["*FT'","&"],"F":["id","(E)"]}
-sentencas_trat = {'E': [['T', "E'"]], "E'": [['+', "T", "E'"],['&']], "T": [['F', "T'"]],"T'": [['*', "F", "T'"],['&']],"F": [['id'],['(', "E", ")"]]}
+#sentencas = {"E":["TE'"],"E'":["+TE'","&"],"T":["FT'"],"T'":["*FT'","&"],"F":["id","(E)"]}
+#sentencas_trat = {'E': [['T', "E'"]], "E'": [['+', "T", "E'"],['&']], "T": [['F', "T'"]],"T'": [['*', "F", "T'"],['&']],"F": [['id'],['(', "E", ")"]]}
 
-first_list = {'E': {'(','id'}, "E'": {'+','&'}, "T": {'(', 'id'}, "T'": {'*',"&"}, "F": {'(', 'id'}}
-follow_list = {'E': {'$',')'}, "E'": {'$',')'}, "T": {'+', '$',')'}, "T'": {'+', '$',')'}, "F": {'*', '+','$', ')'}}
-terminals = ['id', '+', '*', '(', ')', '$']
-non_terminals = ['E',"E'","T","T'","F"]
-
-#sentencas = {'E': [['T', "E'"]], "E'": [['or', "T", "E'"],['&']], "T": [['F', "T'"]],"T'": [['and', "F", "T'"],['&']],"F": [['¬', "F"],['id']]}
-#first_list = {'E': {'¬','id'}, "E'": {'&','or'}, "T": {'¬', 'id'}, "T'": {'and',"&"}, "F": {'¬', 'id'}}
-#follow_list = {'E': {'$'}, "E'": {'$'}, "T": {'$', 'or'}, "T'": {'$', 'or'}, "F": {'and', '$', 'or'}}
-#terminals = ['id', 'or', 'and', '¬', '$']
+#first_list = {'E': {'(','id'}, "E'": {'+','&'}, "T": {'(', 'id'}, "T'": {'*',"&"}, "F": {'(', 'id'}}
+#follow_list = {'E': {'$',')'}, "E'": {'$',')'}, "T": {'+', '$',')'}, "T'": {'+', '$',')'}, "F": {'*', '+','$', ')'}}
+#terminals = ['id', '+', '*', '(', ')', '$']
 #non_terminals = ['E',"E'","T","T'","F"]
+
+sentencas_trat = {'E': [['T', "E'"]], "E'": [['+', "T", "E'"], ['&']], "T": [['F', "T'"]], "T'": [['*', "F", "T'"], ['&']], "F": [['¬', "F"], ['id']]}
+sentencas = {"E":["TE'"],"E'":["+TE'","&"],"T":["FT'"],"T'":["*FT'","&"],"F":["¬F","id"]}
+first_list = {'E': {'¬','id'}, "E'": {'&','+'}, "T": {'¬', 'id'}, "T'": {'*',"&"}, "F": {'¬', 'id'}}
+follow_list = {'E': {'$'}, "E'": {'$'}, "T": {'$', '+'}, "T'": {'$', '+'}, "F": {'*', '$', '+'}}
+terminals = ['id', '+', '*', '¬', '$']
+non_terminals = ['E',"E'","T","T'","F"]
 
 #sentencas = {'S': [['A', 'k', 'O']], 'A': [['a', "A''"]], "A''": [['B', "A'"], ['C', "A'"]], 'C': [['c']], 'B': [['b', 'B', 'C'], ['r']], "A'": [['d', "A'"], ['&']]}
 #first_list = {'S': {'a'}, 'A': {'a'}, "A''": {'r', 'b', 'c'},'C': {'c'}, 'B': {'r', 'b'}, "A'": {'&', 'd'}}
@@ -23,7 +22,9 @@ non_terminals = ['E',"E'","T","T'","F"]
 #terminals = ['k', 'O', 'd', 'a', 'c', 'b', 'r','$']
 #non_terminals = ["S", "A", "A''", "C", "B", "A'"]
 
+
 def adapt_grammar(grammar):
+    new_grammar = {}
     #Algoritmo de adaptação da gramática
     for key in grammar:
         lista = []
@@ -32,7 +33,10 @@ def adapt_grammar(grammar):
             l = []
             la = len(expr)
             index = 1
-            if la == 1:
+            if expr in terminals:
+                lista.append([expr])
+            
+            elif la == 1:
                 lista.append([expr])
                 continue
             else:
@@ -56,8 +60,12 @@ def adapt_grammar(grammar):
                     index += 1
 
                 lista.append(l)
-            grammar[key] = lista  
-    return grammar
+            new_grammar[key] = lista  
+    return new_grammar
+
+def adapt_symbol(grammar):
+    for non_terminal, expression in grammar.items():
+        print(expression)
 
 def generate_parse_table(terminals, non_terminals, grammar, grammar_first, grammar_follow):
     parse_table = [["-"]*len(terminals) for i in range(len(non_terminals))]
@@ -92,9 +100,9 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
                 for elem in grammar_first[first_char]:          
                     # Criamos uma grammar2 apenas como variavel aux
                     grammar2 = deepcopy(grammar)
-                    for i in grammar[non_terminal]:
-                        if i[0] == first_char:
-                            lista = list(filter(i.__eq__, grammar[non_terminal]))
+                    for j in grammar[non_terminal]:
+                        if j[0] == first_char:
+                            lista = list(filter(j.__eq__, grammar[non_terminal]))
                             grammar2[non_terminal] = lista
                             
                             indexT = terminals.index(elem)
@@ -109,9 +117,9 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
                 # Criamos uma grammar2 apenas como variavel aux
                 grammar2 = deepcopy(grammar)
 
-                for i in grammar[non_terminal]:
-                    if i[0] == first_char: 
-                        lista = list(filter(i.__eq__, grammar[non_terminal]))
+                for k in grammar[non_terminal]:
+                    if k[0] == first_char: 
+                        lista = list(filter(k.__eq__, grammar[non_terminal]))
                         grammar2[non_terminal] = lista
                         
                         #Percorremos a expressão NT -> T NT
@@ -126,7 +134,9 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
                         grammar2 = deepcopy(grammar)
             
             # Se o primeiro char é um &
+                     
             if first_char == OP.EPSILON:
+               
                 #Percorremos a expressão NT -> NT | &
                 # Na iteração que o first_char = &
                 # Ex: A -> Bc | &
@@ -137,24 +147,9 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
                     indexNT = non_terminals.index(non_terminal)
                     parse_table[indexNT][indexT] = {non_terminal: OP.EPSILON}
     
-    # for i in range(len(non_terminals)):
-    #     print(parse_table[i])
-    # print("thiago chavez apenas")
-    # print(parse_table)
+    for i in range(len(non_terminals)):
+       print(parse_table[i])
+    
     return(parse_table)
 
-# table = generate_parse_table(terminals, non_terminals,adapt_grammar(sentencas), first_list, follow_list)
-def parseToCsv(table, non_terminals, terminals, file):
-    header = [" "]
-    for symbol in terminals:
-        header.append(symbol)
-    # parseToCsv
-    with open(file, 'w', encoding='UTF8') as f:
-        writer = csv.writer(f)
-        writer.writerow(header)
-        for i in range(len(non_terminals)):
-            row = [non_terminals[i]]
-            for element in table[i]:
-                row.append(element)
-            writer.writerow(row)
-    utils.csv_to_table("outputs/parse_table.csv", "outputs/csv_files/parse_table.csv")
+table = generate_parse_table(terminals, non_terminals,adapt_grammar(sentencas), first_list, follow_list)
