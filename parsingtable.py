@@ -9,12 +9,19 @@ from operators import Operators as OP
 #terminals = ['id', '+', '*', '(', ')', '$']
 #non_terminals = ['E',"E'","T","T'","F"]
 
-sentencas_trat = {'E': [['T', "E'"]], "E'": [['+', "T", "E'"], ['&']], "T": [['F', "T'"]], "T'": [['*', "F", "T'"], ['&']], "F": [['¬', "F"], ['id']]}
-sentencas = {"E":["TE'"],"E'":["+TE'","&"],"T":["FT'"],"T'":["*FT'","&"],"F":["¬F","id"]}
-first_list = {'E': {'¬','id'}, "E'": {'&','+'}, "T": {'¬', 'id'}, "T'": {'*',"&"}, "F": {'¬', 'id'}}
-follow_list = {'E': {'$'}, "E'": {'$'}, "T": {'$', '+'}, "T'": {'$', '+'}, "F": {'*', '$', '+'}}
-terminals = ['id', '+', '*', '¬', '$']
-non_terminals = ['E',"E'","T","T'","F"]
+#sentencas_trat = {'E': [['T'],["E'"]], "E'": [['+', "T", "E'"], ['&']], "T": [['F', "T'"]], "T'": [['*', "F", "T'"], ['&']], "F": [['¬', "F"], ['id']]}
+#sentencas_trat2 = {'E': [['T',"E'"]], "E'": [['+', "T", "E'"], ['&']], "T": [['F', "T'"]], "T'": [['*', "F", "T'"], ['&']], "F": [['¬', "F"], ['id']]}
+#sentencas = {"E":["TE'"],"E'":["+TE'","&"],"T":["FT'"],"T'":["*FT'","&"],"F":["¬F","id"]}
+#first_list = {'E': {'¬','id'}, "E'": {'&','+'}, "T": {'¬', 'id'}, "T'": {'*',"&"}, "F": {'¬', 'id'}}
+#follow_list = {'E': {'$'}, "E'": {'$'}, "T": {'$', '+'}, "T'": {'$', '+'}, "F": {'*', '$', '+'}}
+#terminals = ['id', '+', '*', '¬', '$']
+#non_terminals = ['E',"E'","T","T'","F"]
+
+sentencas_trat = {'P': [['K', "L"],['b','K','L','e']], "K": [['c', "K"], ['T','V']], "T": [['t', "T'"],['&']], "V": [['v', "V'"]],"V'": [['V'],["&"]], "L": [['J']], "J": [['a',"J'"],["e","J'"]], "J'": [['c',"J'"],["&"]]}
+first_list = {'P': {'c','b','t','v','&'}, "K": {'c','t','v','&'}, "T": {'t', '&'}, "V": {'v'}, "V'": {'v', '&'}, "L": {'a', 'e'}, "J": {'a', 'e'}, "J'": {'c', '&'}}
+follow_list = {'P': {'$'}, "K": {'a','e'}, "T": {'v'}, "V": {'a','e'}, "V'": {'a','e'}, "L": {'e', '$'}, "J": {'e', '$'}, "J'": {'e', '$'}}
+terminals = ['e', 'c', 't', 'v', 'a', 'b','$']
+non_terminals = ['P',"K","T","V","V'","L","J","J'"]
 
 #sentencas = {'S': [['A', 'k', 'O']], 'A': [['a', "A''"]], "A''": [['B', "A'"], ['C', "A'"]], 'C': [['c']], 'B': [['b', 'B', 'C'], ['r']], "A'": [['d', "A'"], ['&']]}
 #first_list = {'S': {'a'}, 'A': {'a'}, "A''": {'r', 'b', 'c'},'C': {'c'}, 'B': {'r', 'b'}, "A'": {'&', 'd'}}
@@ -96,19 +103,30 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
                 # Ex: A -> BC | DE
                 # Pegamos first[B] e para todo ParseTable[A][First de B] adicionamos a expressao A -> BC
                 # Na outra iteração pegamos first[D] e para todo ParseTable[A][First de D] adicionamos a expressao A -> DE
-
-                for elem in grammar_first[first_char]:          
+                for elem in grammar_first[first_char]:           
                     # Criamos uma grammar2 apenas como variavel aux
                     grammar2 = deepcopy(grammar)
                     for j in grammar[non_terminal]:
-                        if j[0] == first_char:
+                        if j[0] == first_char and elem != "&":
                             lista = list(filter(j.__eq__, grammar[non_terminal]))
+                            
                             grammar2[non_terminal] = lista
                             
                             indexT = terminals.index(elem)
                             indexNT = non_terminals.index(non_terminal)
-                    
+                            
                             parse_table[indexNT][indexT] = {non_terminal: grammar2[non_terminal]}
+                            
+                            grammar2 = deepcopy(grammar)
+                        if j[0] == first_char and elem == "&":
+                            lista = list(filter(j.__eq__, grammar[non_terminal]))
+                            grammar2[non_terminal] = lista
+
+                            for j in grammar_follow[non_terminal]:
+                                indexT = terminals.index(j)
+                                indexNT = non_terminals.index(non_terminal)
+                                parse_table[indexNT][indexT] = {non_terminal: grammar2[non_terminal]}
+                            
                             grammar2 = deepcopy(grammar)
             
             # Se o primeiro char é um terminal
@@ -152,4 +170,5 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
     
     return(parse_table)
 
-table = generate_parse_table(terminals, non_terminals,adapt_grammar(sentencas), first_list, follow_list)
+table = generate_parse_table(terminals, non_terminals,sentencas_trat, first_list, follow_list)
+#table = generate_parse_table(terminals, non_terminals,adapt_grammar(sentencas), first_list, follow_list)
