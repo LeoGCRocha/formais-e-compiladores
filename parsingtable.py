@@ -17,18 +17,17 @@ from operators import Operators as OP
 #terminals = ['id', '+', '*', '¬', '$']
 #non_terminals = ['E',"E'","T","T'","F"]
 
-sentencas_trat = {'P': [['K', "L"],['b','K','L','e']], "K": [['c', "K"], ['T','V']], "T": [['t', "T'"],['&']], "V": [['v', "V'"]],"V'": [['V'],["&"]], "L": [['J']], "J": [['a',"J'"],["e","J'"]], "J'": [['c',"J'"],["&"]]}
-first_list = {'P': {'c','b','t','v','&'}, "K": {'c','t','v','&'}, "T": {'t', '&'}, "V": {'v'}, "V'": {'v', '&'}, "L": {'a', 'e'}, "J": {'a', 'e'}, "J'": {'c', '&'}}
-follow_list = {'P': {'$'}, "K": {'a','e'}, "T": {'v'}, "V": {'a','e'}, "V'": {'a','e'}, "L": {'e', '$'}, "J": {'e', '$'}, "J'": {'e', '$'}}
-terminals = ['e', 'c', 't', 'v', 'a', 'b','$']
-non_terminals = ['P',"K","T","V","V'","L","J","J'"]
-
 #sentencas = {'S': [['A', 'k', 'O']], 'A': [['a', "A''"]], "A''": [['B', "A'"], ['C', "A'"]], 'C': [['c']], 'B': [['b', 'B', 'C'], ['r']], "A'": [['d', "A'"], ['&']]}
 #first_list = {'S': {'a'}, 'A': {'a'}, "A''": {'r', 'b', 'c'},'C': {'c'}, 'B': {'r', 'b'}, "A'": {'&', 'd'}}
 #follow_list = {'S': {'$'}, 'A': {'k'}, "A''": {'k'}, 'C': {'k', 'd', 'c'}, 'B': {'k', 'd', 'c'}, "A'": {'k'}}
 #terminals = ['k', 'O', 'd', 'a', 'c', 'b', 'r','$']
 #non_terminals = ["S", "A", "A''", "C", "B", "A'"]
 
+sentencas_trat = {'P': [['K', "L"],['b','K','L','e']], "K": [['c', "K"], ['T','V']], "T": [['t', "T'"],['&']], "V": [['v', "V'"]],"V'": [['V'],["&"]], "L": [['J']], "J": [['a',"J'"],["e","J'"]], "J'": [['c',"J'"],["&"]]}
+first_list = {'P': {'c','b','t','v','&'}, "K": {'c','t','v','&'}, "T": {'t', '&'}, "V": {'v'}, "V'": {'v', '&'}, "L": {'a', 'e'}, "J": {'a', 'e'}, "J'": {'c', '&'}}
+follow_list = {'P': {'$'}, "K": {'a','e'}, "T": {'v'}, "V": {'a','e'}, "V'": {'a','e'}, "L": {'e', '$'}, "J": {'e', '$'}, "J'": {'e', '$'}}
+terminals = ['e', 'c', 't', 'v', 'a', 'b','$']
+non_terminals = ['P',"K","T","V","V'","L","J","J'"]
 
 def adapt_grammar(grammar):
     new_grammar = {}
@@ -118,6 +117,8 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
                             parse_table[indexNT][indexT] = {non_terminal: grammar2[non_terminal]}
                             
                             grammar2 = deepcopy(grammar)
+                        #Caso que tem & no first do first_char
+                        # Adicionamos nos follows do Non terminal
                         if j[0] == first_char and elem == "&":
                             lista = list(filter(j.__eq__, grammar[non_terminal]))
                             grammar2[non_terminal] = lista
@@ -165,10 +166,7 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
                     indexNT = non_terminals.index(non_terminal)
                     parse_table[indexNT][indexT] = {non_terminal: OP.EPSILON}
     
-    for i in range(len(non_terminals)):
-       print(parse_table[i])
-    
     return(parse_table)
 
-table = generate_parse_table(terminals, non_terminals,sentencas_trat, first_list, follow_list)
+#table = generate_parse_table(terminals, non_terminals,sentencas_trat, first_list, follow_list)
 #table = generate_parse_table(terminals, non_terminals,adapt_grammar(sentencas), first_list, follow_list)
