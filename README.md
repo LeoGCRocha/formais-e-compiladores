@@ -1,4 +1,4 @@
-# Analisador Léxico - Linguagens Formais e Compiladores
+# Analisador Léxico  e Sintático - Linguagens Formais e Compiladores
 
 Para executar a aplicação:
 1) Execute pip3 install -r requirements.txt
