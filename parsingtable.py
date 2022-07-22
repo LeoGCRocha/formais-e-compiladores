@@ -1,5 +1,7 @@
 from copy import deepcopy
 from operators import Operators as OP
+import csv
+import utils
 
 #sentencas = {"E":["TE'"],"E'":["+TE'","&"],"T":["FT'"],"T'":["*FT'","&"],"F":["id","(E)"]}
 #sentencas_trat = {'E': [['T', "E'"]], "E'": [['+', "T", "E'"],['&']], "T": [['F', "T'"]],"T'": [['*', "F", "T'"],['&']],"F": [['id'],['(', "E", ")"]]}
@@ -9,13 +11,13 @@ from operators import Operators as OP
 #terminals = ['id', '+', '*', '(', ')', '$']
 #non_terminals = ['E',"E'","T","T'","F"]
 
-#sentencas_trat = {'E': [['T'],["E'"]], "E'": [['+', "T", "E'"], ['&']], "T": [['F', "T'"]], "T'": [['*', "F", "T'"], ['&']], "F": [['¬', "F"], ['id']]}
-#sentencas_trat2 = {'E': [['T',"E'"]], "E'": [['+', "T", "E'"], ['&']], "T": [['F', "T'"]], "T'": [['*', "F", "T'"], ['&']], "F": [['¬', "F"], ['id']]}
-#sentencas = {"E":["TE'"],"E'":["+TE'","&"],"T":["FT'"],"T'":["*FT'","&"],"F":["¬F","id"]}
-#first_list = {'E': {'¬','id'}, "E'": {'&','+'}, "T": {'¬', 'id'}, "T'": {'*',"&"}, "F": {'¬', 'id'}}
-#follow_list = {'E': {'$'}, "E'": {'$'}, "T": {'$', '+'}, "T'": {'$', '+'}, "F": {'*', '$', '+'}}
-#terminals = ['id', '+', '*', '¬', '$']
-#non_terminals = ['E',"E'","T","T'","F"]
+sentencas_trat = {'E': [['T'],["E'"]], "E'": [['+', "T", "E'"], ['&']], "T": [['F', "T'"]], "T'": [['*', "F", "T'"], ['&']], "F": [['¬', "F"], ['id']]}
+sentencas_trat2 = {'E': [['T',"E'"]], "E'": [['+', "T", "E'"], ['&']], "T": [['F', "T'"]], "T'": [['*', "F", "T'"], ['&']], "F": [['¬', "F"], ['id']]}
+sentencas = {"E":["TE'"],"E'":["+TE'","&"],"T":["FT'"],"T'":["*FT'","&"],"F":["¬F","id"]}
+first_list = {'E': {'¬','id'}, "E'": {'&','+'}, "T": {'¬', 'id'}, "T'": {'*',"&"}, "F": {'¬', 'id'}}
+follow_list = {'E': {'$'}, "E'": {'$'}, "T": {'$', '+'}, "T'": {'$', '+'}, "F": {'*', '$', '+'}}
+terminals = ['id', '+', '*', '¬', '$']
+non_terminals = ['E',"E'","T","T'","F"]
 
 #sentencas = {'S': [['A', 'k', 'O']], 'A': [['a', "A''"]], "A''": [['B', "A'"], ['C', "A'"]], 'C': [['c']], 'B': [['b', 'B', 'C'], ['r']], "A'": [['d', "A'"], ['&']]}
 #first_list = {'S': {'a'}, 'A': {'a'}, "A''": {'r', 'b', 'c'},'C': {'c'}, 'B': {'r', 'b'}, "A'": {'&', 'd'}}
@@ -23,11 +25,11 @@ from operators import Operators as OP
 #terminals = ['k', 'O', 'd', 'a', 'c', 'b', 'r','$']
 #non_terminals = ["S", "A", "A''", "C", "B", "A'"]
 
-sentencas_trat = {'P': [['K', "L"],['b','K','L','e']], "K": [['c', "K"], ['T','V']], "T": [['t', "T'"],['&']], "V": [['v', "V'"]],"V'": [['V'],["&"]], "L": [['J']], "J": [['a',"J'"],["e","J'"]], "J'": [['c',"J'"],["&"]]}
-first_list = {'P': {'c','b','t','v','&'}, "K": {'c','t','v','&'}, "T": {'t', '&'}, "V": {'v'}, "V'": {'v', '&'}, "L": {'a', 'e'}, "J": {'a', 'e'}, "J'": {'c', '&'}}
-follow_list = {'P': {'$'}, "K": {'a','e'}, "T": {'v'}, "V": {'a','e'}, "V'": {'a','e'}, "L": {'e', '$'}, "J": {'e', '$'}, "J'": {'e', '$'}}
-terminals = ['e', 'c', 't', 'v', 'a', 'b','$']
-non_terminals = ['P',"K","T","V","V'","L","J","J'"]
+# sentencas_trat = {'P': [['K', "L"],['b','K','L','e']], "K": [['c', "K"], ['T','V']], "T": [['t', "T'"],['&']], "V": [['v', "V'"]],"V'": [['V'],["&"]], "L": [['J']], "J": [['a',"J'"],["e","J'"]], "J'": [['c',"J'"],["&"]]}
+# first_list = {'P': {'c','b','t','v','&'}, "K": {'c','t','v','&'}, "T": {'t', '&'}, "V": {'v'}, "V'": {'v', '&'}, "L": {'a', 'e'}, "J": {'a', 'e'}, "J'": {'c', '&'}}
+# follow_list = {'P': {'$'}, "K": {'a','e'}, "T": {'v'}, "V": {'a','e'}, "V'": {'a','e'}, "L": {'e', '$'}, "J": {'e', '$'}, "J'": {'e', '$'}}
+# terminals = ['e', 'c', 't', 'v', 'a', 'b','$']
+# non_terminals = ['P',"K","T","V","V'","L","J","J'"]
 
 def adapt_grammar(grammar):
     new_grammar = {}
@@ -153,9 +155,7 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
                         grammar2 = deepcopy(grammar)
             
             # Se o primeiro char é um &
-                     
             if first_char == OP.EPSILON:
-               
                 #Percorremos a expressão NT -> NT | &
                 # Na iteração que o first_char = &
                 # Ex: A -> Bc | &
@@ -167,6 +167,21 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
                     parse_table[indexNT][indexT] = {non_terminal: OP.EPSILON}
     
     return(parse_table)
+
+def parseToCsv(table, non_terminals, terminals, file):
+    header = [" "]
+    for symbol in terminals:
+        header.append(symbol)
+    # parseToCsv
+    with open(file, 'w', encoding='UTF8') as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        for i in range(len(non_terminals)):
+            row = [non_terminals[i]]
+            for element in table[i]:
+                row.append(element)
+            writer.writerow(row)
+    utils.csv_to_table("outputs/parse_table.csv", "outputs/csv_files/parse_table.csv")
 
 #table = generate_parse_table(terminals, non_terminals,sentencas_trat, first_list, follow_list)
 #table = generate_parse_table(terminals, non_terminals,adapt_grammar(sentencas), first_list, follow_list)
