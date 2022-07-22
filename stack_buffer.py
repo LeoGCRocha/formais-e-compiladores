@@ -21,20 +21,20 @@ def validateCode(start_symbol, tokens, first, follows, table):
                 tokens.pop()
                 stack.pop()
             else:
-                last_value = stack[-1].pop()
+                last_value = stack.pop()
                 last_token = tokens[-1]
                 # Verificar se /
                 # Verificar se eh & 
-                if table[last_token] == "-":
-                    print("Syntatic error")
-                    return False
-                elif table[last_token] == "&":
-                    # Remove from stack without pass to next token
-                    pass
-                else:
-                    next_to_add = table[last_token]
-                    # Identificar os simbolos parte a parte
-                    break
+                # if table[last_token] == "-":
+                #     return False
+                # elif table[last_token] == "&":
+                #     pass
+                # else:
+                #     next_to_add = table[last_token]
+                #     break
+                print(last_value)
+                print(last_token)
+        break
 tokens = readTokensAndPrepare("outputs/tokens.txt")
 print(tokens)
 validateCode("S", tokens, {}, {}, {})
