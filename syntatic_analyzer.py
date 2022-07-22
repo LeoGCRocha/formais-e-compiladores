@@ -2,6 +2,7 @@ import left_recursion as lr
 import first_follow as fp
 import parsingtable as pt
 import left_factoring as lf
+import stack_buffer as sb
 import copy
 class SyntaticAnalyzer():
     def __init__(self, language_definition = "inputs/language_definition.txt", source = "inputs/source.txt"):
@@ -32,6 +33,17 @@ class SyntaticAnalyzer():
         pt.parseToCsv(self.__table, self.__nt, self.__t, "outputs/parse_table.csv")
     def getProductions(self):
         return self.__productions
-if __name__ == "__main__":
-    syntatic_analyzer = SyntaticAnalyzer("inputs/language_definition.txt", "inputs/source.txt")
-    lr.dicToFile(syntatic_analyzer.getProductions(), "outputs/language_definition.txt")
+    def validate(self):
+        isValid = sb.validateCode(self.getFirstSymbol(), sb.readTokensAndPrepare("outputs/tokens2.txt"), \
+            self.__nt, self.__t, self.__table)
+        if isValid:
+            print("Codigo compilado com sucesso.")
+        else:
+            print("Não foi possivel compilar o codigo.")
+    def getFirstSymbol(self):
+        with open(self.__lanuage_definition) as f:
+            lines = f.readlines()[0][0]
+            return lines
+syntatic_analyzer = SyntaticAnalyzer("inputs/language_definition.txt", "inputs/source.txt")
+lr.dicToFile(syntatic_analyzer.getProductions(), "outputs/language_definition.txt")
+syntatic_analyzer.validate()
