@@ -1,11 +1,68 @@
+import copy
 from operators import Operators as OP
 from files import Files
 from utils import *
+
+
+def remove_indirects(indirect_language, multiple_symbols_identifiers):
+    language = copy.deepcopy(indirect_language)
+
+    for key, value in language.items():
+        language[key] = list(map(lambda x: x if x != "" else OP.EPSILON, value))
+    
+    # sorts msi list from bigger words to smaller words
+    multiple_symbols_identifiers.sort(
+        key = lambda msi : len(msi), reverse = True
+    )
+
+    for key, productions in language.items():
+        # productions: [['a', 'S'], 'b', ...]
+
+        # symbol -> production
+        # links a symbol s to each production which initial symbol is s
+        subproductions = dict()
+
+        # builds subproductions 
+        for subproduction in productions:
+            starts_with_msi = False
+            for msi in multiple_symbols_identifiers:
+                if subproduction.startswith(msi):
+                    starts_with_msi = True
+                    break
+
+            if (starts_with_msi):
+                if msi not in list(subproductions.keys()):
+                    subproductions[msi] = [subproduction]
+                else:
+                    subproductions[msi].append(subproduction)
+            else:
+                if subproduction[0] not in list(subproductions.keys()):
+                    subproductions[subproduction[0]] = [subproduction]
+                else:
+                    subproductions[subproduction[0]].append(subproduction)
+        
+        new_productions = []
+        for k, v in subproductions.items():
+            if k in language.keys():
+                for x in v:
+                    language[key].remove(x)
+                    for y in language[k]:
+                        new_productions.append(x.replace(k,y))
+                language[key].extend(new_productions)
+                return language
+        
+    return language
+                
 
 def left_factoring(language, multiple_symbols_identifiers):
     # replace empty productions to epsilon
     for key, value in language.items():
         language[key] = list(map(lambda x: x if x != "" else OP.EPSILON, value))
+    
+    # sorts msi list from bigger words to smaller words
+    multiple_symbols_identifiers.sort(
+        key = lambda msi : len(msi), reverse = True
+    )
 
     # one time factored language
     new_language = {}
@@ -87,9 +144,17 @@ def left_factoring(language, multiple_symbols_identifiers):
     }
 
     # call left_factoring until no more changes are detected
+    multiple_symbols_identifiers = multiple_symbols_identifiers + new_symbols
     if (language != new_language):
-        return left_factoring(new_language, multiple_symbols_identifiers+new_symbols)
+        return left_factoring(new_language, multiple_symbols_identifiers)
 
+    if (language != new_language):
+        return left_factoring(new_language, multiple_symbols_identifiers)
+    
+    language_indirect = remove_indirects(language, multiple_symbols_identifiers)
+
+    if (language != language_indirect):
+        return left_factoring(language_indirect, multiple_symbols_identifiers)
     return new_language
 
 def test():

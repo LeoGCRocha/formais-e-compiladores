@@ -1,3 +1,4 @@
-S -> idS', b
-S' -> &, a
-A -> b, c
+S -> idS', j
+S' -> bS'', ec
+S'' -> d, c
+A -> b, e
