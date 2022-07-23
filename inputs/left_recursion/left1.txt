@@ -1,2 +1,0 @@
-S -> Aa | Sb
-A -> SSc | d

@@ -1,4 +1,4 @@
-S -> AaS'
-S' -> bS' | &
-A -> SbScA' | dA'
-A' -> aScA' | &
+S -> A a S'
+S' -> b id teste S' | &
+A -> S b id teste S c A' | d A'
+A' -> a S c A' | &

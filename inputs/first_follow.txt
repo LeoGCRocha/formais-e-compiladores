@@ -1,5 +1,5 @@
-S -> BA
-A -> aBA | &
-B -> DC
-C -> bDC | &
-D -> cSc | d
+P -> KVC
+K -> cK | &
+V -> vV | F
+F -> fP;F | &
+C -> bVCe | comC | &

@@ -7,7 +7,6 @@ import os
 import glob
 from files import *
 
-
 if __name__ == "__main__":
     files = glob.glob("outputs/csv_files/*.csv")
     for f in files:

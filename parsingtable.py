@@ -11,13 +11,13 @@ import utils
 #terminals = ['id', '+', '*', '(', ')', '$']
 #non_terminals = ['E',"E'","T","T'","F"]
 
-sentencas_trat = {'E': [['T'],["E'"]], "E'": [['+', "T", "E'"], ['&']], "T": [['F', "T'"]], "T'": [['*', "F", "T'"], ['&']], "F": [['¬', "F"], ['id']]}
-sentencas_trat2 = {'E': [['T',"E'"]], "E'": [['+', "T", "E'"], ['&']], "T": [['F', "T'"]], "T'": [['*', "F", "T'"], ['&']], "F": [['¬', "F"], ['id']]}
-sentencas = {"E":["TE'"],"E'":["+TE'","&"],"T":["FT'"],"T'":["*FT'","&"],"F":["¬F","id"]}
-first_list = {'E': {'¬','id'}, "E'": {'&','+'}, "T": {'¬', 'id'}, "T'": {'*',"&"}, "F": {'¬', 'id'}}
-follow_list = {'E': {'$'}, "E'": {'$'}, "T": {'$', '+'}, "T'": {'$', '+'}, "F": {'*', '$', '+'}}
-terminals = ['id', '+', '*', '¬', '$']
-non_terminals = ['E',"E'","T","T'","F"]
+# sentencas_trat = {'E': [['T'],["E'"]], "E'": [['+', "T", "E'"], ['&']], "T": [['F', "T'"]], "T'": [['*', "F", "T'"], ['&']], "F": [['¬', "F"], ['id']]}
+# sentencas_trat2 = {'E': [['T',"E'"]], "E'": [['+', "T", "E'"], ['&']], "T": [['F', "T'"]], "T'": [['*', "F", "T'"], ['&']], "F": [['¬', "F"], ['id']]}
+# sentencas = {"E":["TE'"],"E'":["+TE'","&"],"T":["FT'"],"T'":["*FT'","&"],"F":["¬F","id"]}
+# first_list = {'E': {'¬','id'}, "E'": {'&','+'}, "T": {'¬', 'id'}, "T'": {'*',"&"}, "F": {'¬', 'id'}}
+# follow_list = {'E': {'$'}, "E'": {'$'}, "T": {'$', '+'}, "T'": {'$', '+'}, "F": {'*', '$', '+'}}
+# terminals = ['id', '+', '*', '¬', '$']
+# non_terminals = ['E',"E'","T","T'","F"]
 
 #sentencas = {'S': [['A', 'k', 'O']], 'A': [['a', "A''"]], "A''": [['B', "A'"], ['C', "A'"]], 'C': [['c']], 'B': [['b', 'B', 'C'], ['r']], "A'": [['d', "A'"], ['&']]}
 #first_list = {'S': {'a'}, 'A': {'a'}, "A''": {'r', 'b', 'c'},'C': {'c'}, 'B': {'r', 'b'}, "A'": {'&', 'd'}}
@@ -31,7 +31,7 @@ non_terminals = ['E',"E'","T","T'","F"]
 # terminals = ['e', 'c', 't', 'v', 'a', 'b','$']
 # non_terminals = ['P',"K","T","V","V'","L","J","J'"]
 
-def adapt_grammar(grammar):
+def adapt_grammar(grammar, terminals):
     new_grammar = {}
     #Algoritmo de adaptação da gramática
     for key in grammar:
@@ -150,7 +150,7 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
 
                         indexT = terminals.index(first_char)
                         indexNT = non_terminals.index(non_terminal)
-                    
+                        
                         parse_table[indexNT][indexT] = {non_terminal: grammar2[non_terminal]}
                         grammar2 = deepcopy(grammar)
             
@@ -165,7 +165,6 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
                     indexT = terminals.index(elem)
                     indexNT = non_terminals.index(non_terminal)
                     parse_table[indexNT][indexT] = {non_terminal: OP.EPSILON}
-    
     return(parse_table)
 
 def parseToCsv(table, non_terminals, terminals, file):
