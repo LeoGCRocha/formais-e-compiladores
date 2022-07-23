@@ -32,43 +32,15 @@ import utils
 # non_terminals = ['P',"K","T","V","V'","L","J","J'"]
 
 def adapt_grammar(grammar, terminals):
+    # {"E":["TE'"],"E'":["+TE'","&"],"T":["FT'"],"T'":["*FT'","&"],"F":["id","(E)"]}
     new_grammar = {}
-    #Algoritmo de adaptação da gramática
-    for key in grammar:
-        lista = []
-        for expr in grammar[key]:
-            curr = expr[0]
-            l = []
-            la = len(expr)
-            index = 1
-            if expr in terminals:
-                lista.append([expr])
-            
-            elif la == 1:
-                lista.append([expr])
-                continue
-            else:
-                while 1:
-                    ia = expr[index]
-
-                    if index == la - 1:
-                        if ia != "\'":
-                            l.append(curr)
-                            l.append(ia)
-                        else:
-                            l.append(curr+ia)
-                        break
-
-                    if ia != "\'":
-                        l.append(curr)
-                        curr = ia
-                    else:
-                        curr += ia
-
-                    index += 1
-
-                lista.append(l)
-            new_grammar[key] = lista  
+    for key,value in grammar.items():
+        new_grammar[key] = []
+    for key, value in grammar.items():
+        value_to_add = []
+        for item in value:
+            value_to_add.append(item.split())
+        new_grammar[key] = value_to_add
     return new_grammar
 
 def adapt_symbol(grammar):
@@ -106,7 +78,7 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
                 # Na outra iteração pegamos first[D] e para todo ParseTable[A][First de D] adicionamos a expressao A -> DE
                 for elem in grammar_first[first_char]:           
                     # Criamos uma grammar2 apenas como variavel aux
-                    grammar2 = deepcopy(grammar)
+                    grammar2 = sdeepcopy(grammar)
                     for j in grammar[non_terminal]:
                         if j[0] == first_char and elem != "&":
                             lista = list(filter(j.__eq__, grammar[non_terminal]))

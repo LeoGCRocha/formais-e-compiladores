@@ -1,5 +1,0 @@
-< id, Entrada 1 >
-< +, Entrada 2 >
-< id, Entrada 3 >
-< id, Entrada 4 >
-< id, Entrada 5 >

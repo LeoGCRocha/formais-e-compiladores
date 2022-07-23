@@ -1,5 +1,1 @@
-E -> T E'
-E' -> + T E' | &
-T -> F T'
-T' -> * F T' | &
-F -> ¬ F | id
+E -> var = const const const

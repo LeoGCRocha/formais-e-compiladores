@@ -29,21 +29,14 @@ class SyntaticAnalyzer():
         self.__nt = arrayResults[2]
         self.__t = arrayResults[3]
         self.__t.append("$")
-        # Parsing table
-        productions2 = {}
-        for key,value in self.__productions.items():
-            value_to_add = []
-            for x in value:
-                value_to_add.append(x.replace(" ", ""))
-            productions2[key] = value_to_add
-        self.__table = pt.generate_parse_table(self.__t, self.__nt, pt.adapt_grammar(copy.deepcopy(productions2), self.__t), \
+        self.__table = pt.generate_parse_table(self.__t, self.__nt, pt.adapt_grammar(copy.deepcopy(self.__productions), self.__t), \
             self.__first, self.__follows)
         pt.parseToCsv(self.__table, self.__nt, self.__t, "outputs/parse_table.csv")
         self.validate()
     def getProductions(self):
         return self.__productions
     def validate(self):
-        isValid = sb.validateCode(self.getFirstSymbol(), sb.readTokensAndPrepare("outputs/tokens2.txt"), \
+        isValid = sb.validateCode(self.getFirstSymbol(), sb.readTokensAndPrepare("outputs/tokens.txt"), \
             self.__nt, self.__t, self.__table)
         if isValid:
             print("Codigo compilado com sucesso.")
