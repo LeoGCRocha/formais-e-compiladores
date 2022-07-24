@@ -8,7 +8,7 @@ def fileToDic(file):
         line = line.replace('\n','')  
         production = line.split('->') 
         production[0] = production[0].strip()
-        mapOfProductions[production[0]] = production[1].strip().replace(" ", "")
+        mapOfProductions[production[0]] = production[1].strip()
     return mapOfProductions
 # Prepare to remove indirect
 def removeEpsilonAndPrepare(productions):
@@ -69,11 +69,11 @@ def eliminateDirectRecursion(productions):
             for sentence in value:
                 if sentence[0] == key:
                     # A -> Aa 
-                    resursive_values.append(sentence[1:] + newKeyValue)
+                    resursive_values.append(sentence[1:] + " "+newKeyValue)
                 else:
                     # E -> ab | EC
                     # E -> abE'
-                    not_recursive_values.append(sentence + newKeyValue)
+                    not_recursive_values.append(sentence + " "+newKeyValue)
             resursive_values.append("&")
             dic_without_recursion[key] = not_recursive_values
             dic_without_recursion[newKeyValue] = resursive_values
@@ -97,11 +97,11 @@ def fixFirstProd(productions):
         for sentence in productions[first_value]:
             if sentence[0] == first_value:
                 # A -> Aa 
-                resursive_values.append(sentence[1:] + newKeyValue)
+                resursive_values.append(sentence[1:] + " " +newKeyValue)
             else:
                 # E -> ab | EC
                 # E -> abE'
-                not_recursive_values.append(sentence + newKeyValue)
+                not_recursive_values.append(sentence + " " + newKeyValue)
         resursive_values.append("&")
         new_dic[first_value] = not_recursive_values
         new_dic[newKeyValue] = resursive_values
@@ -139,14 +139,11 @@ def eliminateLeftRecursion(file):
             withoutIndirect = eliminateIndirectRecursion(withoutFirst)
             withoutDirect = eliminateDirectRecursion(withoutIndirect)
         else:
-            return withoutDirect
-    return withoutDirect
-# Main
-def runTests():
-    pre_fix = "inputs/left_recursion/"
-    files = ["left1.txt", "left2.txt", "left3.txt"]
-    for file in files:
-        file_path = pre_fix + file
-        productions = eliminateLeftRecursion(file_path)
-        dicToFile(productions, "outputs/left_recursion/" + file)
-runTests()
+            # Fix Production 
+            new_dic = {}
+            for key, value in withoutDirect.items():
+                value_to_add = []
+                for val in value:
+                    value_to_add.append(val.strip())
+                new_dic[key] = value_to_add
+            return new_dic

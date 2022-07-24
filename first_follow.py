@@ -29,7 +29,7 @@ def first(rule, start_symbol, rules, nonterm_userdef, term_userdef, diction, fir
                 newList = []
                 fres.remove('&')
                 if len(rule) > 1:
-                    ansNew = first(rule[1:])
+                    ansNew = first(rule[1:], start_symbol, rules, nonterm_userdef, term_userdef, diction, firsts, follows)
                     if ansNew != None:
                         if type(ansNew) is list:
                             newList = fres + ansNew
@@ -112,7 +112,7 @@ def computeAllFirsts(start_symbol, rules, nonterm_userdef, term_userdef, diction
         # remove un-necessary spaces
         for i in range(len(multirhs)):
             multirhs[i] = multirhs[i].strip()
-            #multirhs[i] = multirhs[i].split()
+            multirhs[i] = multirhs[i].split()
         diction[k[0]] = multirhs 
     # calculate first for each rule
     # - (call first() on all RHS)
@@ -147,15 +147,14 @@ def searchNonTerm(nonterm_userdef, productions):
     for key in productions.keys():
         nonterm_userdef.append(key)
 
-def searchTerm(term_userdef, rules):
-    for sentence in rules:
-        fixSentence = sentence.split("->")
-        for atual in fixSentence:
-            for eachChar in atual:
-                if eachChar == eachChar.lower():
-                    if eachChar != " " and eachChar != "|":
-                        if eachChar not in term_userdef:
-                            term_userdef.append(eachChar)
+def searchTerm(term_userdef, rules, productions):
+    for rule in rules:
+        rule = rule.split("->")
+        term =  list(map(str.strip, rule[1].split("|")))
+        for x in term:
+            for y in x.split():
+                if y not in term_userdef and y not in productions.keys():
+                    term_userdef.append(y)
 
 def removeRepeated(lista):
     l = []
@@ -172,12 +171,12 @@ def generateFirstAndFollow(file, productions):
     # Prepare Gramar
     filetoDic(file, rules)
     searchNonTerm(nonterm_userdef, productions)
-    searchTerm(term_userdef, rules)
+    searchTerm(term_userdef, rules, productions)
     # Generate Firsts
     diction = {}
     firsts = {}
     follows = {}
-    computeAllFirsts("@", rules, nonterm_userdef, term_userdef, diction, firsts, follows)
+    computeAllFirsts(rules[0][0], rules, nonterm_userdef, term_userdef, diction, firsts, follows)
     start_symbol = list(diction.keys())[0]
     computeAllFollows(start_symbol, rules, nonterm_userdef, term_userdef, diction, firsts, follows)
     return [firsts, follows, nonterm_userdef, term_userdef]
