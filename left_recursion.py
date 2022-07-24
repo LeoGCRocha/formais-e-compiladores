@@ -2,13 +2,14 @@
 # Grammar without e-production and without circular productions
 from collections import OrderedDict
 def fileToDic(file):
-    f = open(file)
+    # f = open(file)
     mapOfProductions = OrderedDict()
-    for line in f:
-        line = line.replace('\n','')  
-        production = line.split('->') 
-        production[0] = production[0].strip()
-        mapOfProductions[production[0]] = production[1].strip()
+    with open(file, "r") as f:
+        for line in f:
+            line = line.replace('\n','')  
+            production = line.split('->') 
+            production[0] = production[0].strip()
+            mapOfProductions[production[0]] = production[1].strip()
     return mapOfProductions
 # Prepare to remove indirect
 def removeEpsilonAndPrepare(productions):
