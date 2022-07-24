@@ -1,7 +1,8 @@
-S -> beginLend
+S -> begin A end | begin end
+A -> X X X X 
+X -> E | I
+I -> if C then P | if C then P else P
+C -> F relop F 
+E -> var assignment F operator F | var assignment F
 F -> var | const
-D -> F | FoperatorD 
-L -> U | I | Z | LL
-U -> FrelopF
-I -> ifUthenZ | ifUthenZelseZ
-Z -> varassignmentD | printF
+P -> print F

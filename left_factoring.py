@@ -1,7 +1,5 @@
-from audioop import mul
 import copy
 from functools import reduce
-from xxlimited import new
 from operators import Operators as OP
 from files import Files
 from utils import *
@@ -9,9 +7,6 @@ from utils import *
 
 def remove_indirects(indirect_language, multiple_symbols_identifiers):
     language = copy.deepcopy(indirect_language)
-    language_separated = language_insert_spaces(
-        language, multiple_symbols_identifiers
-    )
 
     for key, value in language.items():
         language[key] = list(map(lambda x: x if x != "" else OP.EPSILON, value))
@@ -55,7 +50,17 @@ def remove_indirects(indirect_language, multiple_symbols_identifiers):
                     x = language_line_insert_spaces(x, multiple_symbols_identifiers)
                     x_list = x.split()
                     for y in language[k]:
-                        new_production = list(map(lambda q : y if q == k else q, x_list))
+                        done = False
+                        new_production = []
+                        for q in x_list:
+                            if done:
+                                new_production.append(q)
+                            elif q == k:
+                                new_production.append(y)
+                                done = True
+                            else:
+                                new_production.append(q)
+                        # new_production = list(map(lambda q : y if q == k else q, x_list))
                         new_productions.append("".join(new_production))
                 language[key].extend(new_productions)
                 return language
