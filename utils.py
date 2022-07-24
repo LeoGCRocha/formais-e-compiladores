@@ -135,7 +135,7 @@ def get_msi(file):
 # seperator himself
 def language_insert_spaces(old_language, to_be_separated = [], terminals = []):
     if len(to_be_separated) == 0:
-        to_be_separated = terminals + list(language.keys()) + list("&")
+        to_be_separated = terminals + list(old_language.keys()) + list("&")
     to_be_separated.sort(key=lambda x : len(x), reverse=True)
     
     language = copy.deepcopy(old_language)

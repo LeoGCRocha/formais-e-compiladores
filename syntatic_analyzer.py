@@ -28,7 +28,7 @@ class SyntaticAnalyzer():
         multiple_symbols = list(self.__productions.keys()) + new_array + results[2]
         self.__productions = lf.left_factoring(self.__productions)
         # First & Follow
-        self.__productions = ut.separator_himself(new_array + results[2],self.__productions)
+        self.__productions = ut.language_line_insert_spaces(self.__productions, [], new_array + results[2])
         lr.dicToFile(self.getProductions(), "outputs/language_definition.txt")
         arrayResults = fp.generateFirstAndFollow("outputs/language_definition.txt", self.__productions)
         # Save all first and follows
