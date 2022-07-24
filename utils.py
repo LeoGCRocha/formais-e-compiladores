@@ -123,3 +123,11 @@ def language_write(file_path, language):
         for key, values in language.items():
             file.write(f"{key} -> ")
             file.write(", ".join(["".join(value) for value in values]) + "\n")
+
+# msi must be on last line
+def get_msi(file):
+    with open(file, "r") as file:
+        msi = list(map(lambda x : x.strip(), 
+            file.readlines()[-1].split("=")[-1].split(",")
+        ))
+    return msi
