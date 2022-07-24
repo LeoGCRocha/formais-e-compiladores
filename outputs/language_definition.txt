@@ -1,1 +1,4 @@
-E -> var = const const const
+S -> idS' | j
+S' -> bS'' | ec
+S'' -> d | c
+A -> b | e

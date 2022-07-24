@@ -1,1 +1,2 @@
-E -> var = const const const
+S -> id A c | id b d | j
+A -> b | e
