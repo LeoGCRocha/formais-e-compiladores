@@ -1,3 +1,6 @@
 begin
-    godinez = 1234
+    godinez = 31321 + 321312321 
+    godinez = luiz + nica
+    if nica >= godinez then print jerusa
+    godinez = luiz + nica
 end

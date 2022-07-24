@@ -1,15 +1,17 @@
-S -> begin L end
-F -> var | const
-D -> const D' | var D''
-D' -> & | operator D
-D'' -> & | operator D
-L -> const relop F L' | var L'' | if I' L' | print F L'
-L'' -> relop F L' | assignment D L'
-L' -> & | const relop F L' const relop F L'' | var L'' var L'' ' | if I' L' if I' L'' | print F L' print F L''
-U -> const relop F | var relop F
+S -> begin S'
+S' -> end | E X' X X X end | I X' X X X end
+A -> E X' X X X | I X' X X X
+X -> E X' | I X'
+X' -> X X' | &
 I -> if I'
-I' -> const relop F I'' | var relop F I''
+I' -> var relop F I'' | const relop F I''
 I'' -> then I'''
-I''' -> var assignment D I'''' | print F I''''
-I'''' -> & | else Z
-Z -> var assignment D | print F
+I''' -> print F I''''
+I'''' -> & | else P
+C -> var relop F | const relop F
+E -> var E'
+E' -> assignment E''
+E'' -> var E''' | const E'''
+E''' -> operator F | &
+F -> var | const
+P -> print F
