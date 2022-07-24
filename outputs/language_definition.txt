@@ -1,17 +1,21 @@
 S -> begin S'
-S' -> end | E X' X X X end | I X' X X X end
-A -> E X' X X X | I X' X X X
-X -> E X' | I X'
-X' -> X X' | &
+S' -> end | & X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X end | var E' X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X end | if I' X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X end | print F X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X end
+A -> & X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X | var E' X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X | if I' X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X | print F X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X
+X -> & | var E' | if I' | print F
 I -> if I'
 I' -> var relop F I'' | const relop F I''
 I'' -> then I'''
-I''' -> print F I''''
-I'''' -> & | else P
+I''' -> print I'''' | var T' else T
+I'''' -> var I''''' | const I'''''
+I''''' -> & | else T
 C -> var relop F | const relop F
 E -> var E'
 E' -> assignment E''
 E'' -> var E''' | const E'''
 E''' -> operator F | &
 F -> var | const
+T -> var T' | print F
+T' -> assignment T''
+T'' -> var T''' | const T'''
+T''' -> & | operator F
 P -> print F

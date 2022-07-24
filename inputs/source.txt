@@ -1,6 +1,12 @@
 begin
-    godinez = 31321 + 321312321 
-    godinez = luiz + nica
-    if nica >= godinez then print jerusa
-    godinez = luiz + nica
+    notap1 = 5
+    notap2 = 5
+    notap3 = 4
+    notap4 = 5
+    trabalho1 = 10
+    media1 = notap1 + notap2 
+    media2 = notap3 + notap4
+    media = media1 + media2
+    print media
+    if media >= 6 then print aprovado else print reprovado
 end

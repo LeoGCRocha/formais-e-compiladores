@@ -1,8 +1,9 @@
 S -> begin A end | begin end
-A -> X X X X 
-X -> E | I | X X
-I -> if C then P | if C then P else P
+A -> X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X  
+X -> E | I | P | &
+I -> if C then P | if C then T else T
 C -> F relop F 
 E -> var assignment F operator F | var assignment F
 F -> var | const
+T -> E | P
 P -> print F
