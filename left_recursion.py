@@ -70,11 +70,11 @@ def eliminateDirectRecursion(productions):
             for sentence in value:
                 if sentence[0] == key:
                     # A -> Aa 
-                    resursive_values.append(sentence[1:] + " "+newKeyValue)
+                    resursive_values.append(sentence[1:] + newKeyValue)
                 else:
                     # E -> ab | EC
                     # E -> abE'
-                    not_recursive_values.append(sentence + " "+newKeyValue)
+                    not_recursive_values.append(sentence + newKeyValue)
             resursive_values.append("&")
             dic_without_recursion[key] = not_recursive_values
             dic_without_recursion[newKeyValue] = resursive_values
@@ -98,11 +98,11 @@ def fixFirstProd(productions):
         for sentence in productions[first_value]:
             if sentence[0] == first_value:
                 # A -> Aa 
-                resursive_values.append(sentence[1:] + " " +newKeyValue)
+                resursive_values.append(sentence[1:] + newKeyValue)
             else:
                 # E -> ab | EC
                 # E -> abE'
-                not_recursive_values.append(sentence + " " + newKeyValue)
+                not_recursive_values.append(sentence + newKeyValue)
         resursive_values.append("&")
         new_dic[first_value] = not_recursive_values
         new_dic[newKeyValue] = resursive_values

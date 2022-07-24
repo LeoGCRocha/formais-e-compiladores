@@ -9,6 +9,7 @@ assignment -> =
 if -> if
 else -> else
 then -> then
+begin -> begin
 end -> end
 print -> print
 endif -> endif

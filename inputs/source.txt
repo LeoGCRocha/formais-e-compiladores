@@ -1,1 +1,3 @@
-resultado = 2000 @ sexo
+begin
+    godinez = 1234
+end

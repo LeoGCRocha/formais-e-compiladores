@@ -5,6 +5,7 @@ import left_factoring as lf
 import stack_buffer as sb
 import copy
 import prepareER as pre
+import utils as ut
 class SyntaticAnalyzer():
     def __init__(self, language_definition = "inputs/language_definition.txt", source = "inputs/source.txt"):
         self.__language_definition = language_definition
@@ -25,9 +26,12 @@ class SyntaticAnalyzer():
         for i in results[1]:
             new_array.append(i[0])
         multiple_symbols = list(self.__productions.keys()) + new_array + results[2]
-        self.__productions = lf.do_left_factoring(self.__productions, [])
+        self.__productions = lf.do_left_factoring(self.__productions, multiple_symbols)
         # First & Follow
+        print(self.__productions)
+        self.__productions = ut.separator_himself(new_array + results[2],self.__productions)
         lr.dicToFile(self.getProductions(), "outputs/language_definition.txt")
+        print(self.__productions)
         arrayResults = fp.generateFirstAndFollow("outputs/language_definition.txt", self.__productions)
         # Save all first and follows
         self.__first = arrayResults[0]
@@ -42,7 +46,6 @@ class SyntaticAnalyzer():
     def getProductions(self):
         return self.__productions
     def validate(self):
-        nicolas_vans = sb.readTokensAndPrepare("outputs/tokens.txt")
         isValid = sb.validateCode(self.getFirstSymbol(), sb.readTokensAndPrepare("outputs/tokens.txt"), \
             self.__nt, self.__t, self.__table)
         if isValid:

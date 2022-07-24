@@ -1,1 +1,15 @@
-E -> var assignment const operator const
+S -> begin L end
+F -> var | const
+D -> const D' | var D''
+D' -> & | operator D
+D'' -> & | operator D
+L -> const   relop   F L ' | var L'' | if I' L ' | print F L '
+L'' -> relop   F L ' | assignment D L '
+L' -> & | const   relop   F L ' const   relop   F L ' ' | var L'' var L'' ' | if I' L ' if I' L ' ' | print F L ' print F L ' '
+U -> const   relop   F | var   relop   F
+I -> if I'
+I' -> const   relop   F I ' ' | var   relop   F I ' '
+I'' -> then I'''
+I''' -> var assignment D I ' ' ' ' | print F I ' ' ' '
+I'''' -> & | else Z
+Z -> var assignment D | print F

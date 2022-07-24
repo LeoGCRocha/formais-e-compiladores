@@ -1,1 +1,7 @@
-E -> var assignment const operator const
+S -> beginLend
+F -> var | const
+D -> F | FoperatorD 
+L -> U | I | Z | LL
+U -> F relop F
+I -> ifUthenZ | ifUthenZelseZ
+Z -> varassignmentD | printF

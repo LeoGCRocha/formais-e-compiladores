@@ -131,3 +131,36 @@ def get_msi(file):
             file.readlines()[-1].split("=")[-1].split(",")
         ))
     return msi
+
+# seperator himself
+def separator_himself(terminals, language):
+    to_be_separated = terminals + list(language.keys()) + list("&")
+    print("#################:3")
+    # print(to_be_separated)
+    to_be_separated.sort(key=lambda x : len(x), reverse=True)
+    print(to_be_separated)
+    for key, values in language.items():
+        new_values = []
+        for value in values:
+            indexes = {}
+            aux_value = value
+            index = 0
+            lv = len(value)
+            while(index < lv):
+                found = False
+                for tbs in to_be_separated:
+                    if aux_value[index:].startswith(tbs):
+                        found = True
+                        indexes[index] = tbs
+                        index += len(tbs)
+                if not found:
+                    indexes[index] = aux_value[index]
+                    index += 1
+            new_value = ""
+            new_value_indexes = list(indexes.keys())
+            new_value_indexes.sort()
+            for i in new_value_indexes:
+                new_value += indexes[i] + " "
+            new_values.append(new_value.strip())
+        language[key] = new_values
+    return language
