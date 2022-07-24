@@ -1,4 +1,5 @@
 import copy
+from functools import reduce
 from operators import Operators as OP
 from files import Files
 from utils import *
@@ -54,7 +55,7 @@ def remove_indirects(indirect_language, multiple_symbols_identifiers):
     return language
                 
 
-def left_factoring(language, multiple_symbols_identifiers):
+def do_left_factoring(language, multiple_symbols_identifiers):
     # replace empty productions to epsilon
     for key, value in language.items():
         language[key] = list(map(lambda x: x if x != "" else OP.EPSILON, value))
@@ -146,16 +147,31 @@ def left_factoring(language, multiple_symbols_identifiers):
     # call left_factoring until no more changes are detected
     multiple_symbols_identifiers = multiple_symbols_identifiers + new_symbols
     if (language != new_language):
-        return left_factoring(new_language, multiple_symbols_identifiers)
+        return do_left_factoring(new_language, multiple_symbols_identifiers)
 
     if (language != new_language):
-        return left_factoring(new_language, multiple_symbols_identifiers)
+        return do_left_factoring(new_language, multiple_symbols_identifiers)
     
     language_indirect = remove_indirects(language, multiple_symbols_identifiers)
 
     if (language != language_indirect):
-        return left_factoring(language_indirect, multiple_symbols_identifiers)
+        return do_left_factoring(language_indirect, multiple_symbols_identifiers)
     return new_language
+
+def left_factoring(language):
+    msi = list(set(filter(lambda x : len(x) > 1, 
+        reduce(
+            list.__add__, [
+                x.split() for value in language.values() for x in value
+            ]
+        ) + list(language.keys())
+    )))
+    language  = {
+        key : list(map(lambda x : "".join(x.split()), language[key]))
+        for key in language.keys()
+    }
+    return do_left_factoring(language, msi)
+
 
 def test():
     # language = {
@@ -164,10 +180,10 @@ def test():
     # }
     # language = {"S": ["c", "a", "b"]}
     language, terminals = language_read(Files.IN_LEFT_FACTORING1)
-    result = left_factoring(language, terminals)
+    result = left_factoring(language)
     language_write(Files.OUT_LEFT_FACTORING1, result)
     # result= left_factoring(language)
-    # for y in result:    
+    # for y in result:
     #     print(y, "->", result[y])
 
 if __name__ == "__main__":

@@ -18,8 +18,10 @@ class SyntaticAnalyzer():
     def prepareGrammar(self):
         # Read language definition file and remove left recursion
         self.__productions = lr.eliminateLeftRecursion(self.__language_definition)
+        print(self.__productions)
         # Read production and remove left factoring
-        # self.__productions = lf.leftFactoring(self.__productions)
+        self.__productions = lf.left_factoring(self.__productions)
+        print(self.__productions)
         # First & Follow
         lr.dicToFile(self.getProductions(), "outputs/language_definition.txt")
         arrayResults = fp.generateFirstAndFollow("outputs/language_definition.txt", self.__productions)
