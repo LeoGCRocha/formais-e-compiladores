@@ -146,6 +146,7 @@ def do_left_factoring(language, multiple_symbols_identifiers):
 
     # call left_factoring until no more changes are detected
     multiple_symbols_identifiers = multiple_symbols_identifiers + new_symbols
+
     if (language != new_language):
         return do_left_factoring(new_language, multiple_symbols_identifiers)
 

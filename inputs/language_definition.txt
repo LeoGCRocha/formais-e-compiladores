@@ -2,6 +2,6 @@ S -> beginLend
 F -> var | const
 D -> F | FoperatorD 
 L -> U | I | Z | LL
-U -> F relop F
+U -> FrelopF
 I -> ifUthenZ | ifUthenZelseZ
 Z -> varassignmentD | printF

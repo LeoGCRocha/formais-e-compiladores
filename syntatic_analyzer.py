@@ -27,11 +27,10 @@ class SyntaticAnalyzer():
             new_array.append(i[0])
         multiple_symbols = list(self.__productions.keys()) + new_array + results[2]
         self.__productions = lf.do_left_factoring(self.__productions, multiple_symbols)
-        # First & Follow
         print(self.__productions)
+        # First & Follow
         self.__productions = ut.separator_himself(new_array + results[2],self.__productions)
         lr.dicToFile(self.getProductions(), "outputs/language_definition.txt")
-        print(self.__productions)
         arrayResults = fp.generateFirstAndFollow("outputs/language_definition.txt", self.__productions)
         # Save all first and follows
         self.__first = arrayResults[0]

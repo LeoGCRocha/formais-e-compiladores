@@ -135,10 +135,13 @@ def get_msi(file):
 # seperator himself
 def separator_himself(terminals, language):
     to_be_separated = terminals + list(language.keys()) + list("&")
-    print("#################:3")
-    # print(to_be_separated)
-    to_be_separated.sort(key=lambda x : len(x), reverse=True)
+    print()
     print(to_be_separated)
+    print()
+    print(language.keys())
+    print()
+    to_be_separated.sort(key=lambda x : len(x), reverse=True)
+    # print(to_be_separated)
     for key, values in language.items():
         new_values = []
         for value in values:
@@ -153,6 +156,7 @@ def separator_himself(terminals, language):
                         found = True
                         indexes[index] = tbs
                         index += len(tbs)
+                        break
                 if not found:
                     indexes[index] = aux_value[index]
                     index += 1
