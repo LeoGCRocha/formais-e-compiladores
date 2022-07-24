@@ -1,1 +1,1 @@
-resultado = 2000 + 22
+resultado = 2000 @ sexo

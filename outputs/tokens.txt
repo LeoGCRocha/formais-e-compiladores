@@ -1,8 +1,5 @@
 < var, 6 >
-< =, assignment >
+< assignment, = >
 < const, 7 >
-< +, operator >
-< const, 8 >
-# var assignment const operator const 
-# var = cosnt + const
-# var = const operator const
+< operator, @ >
+< var, 8 >

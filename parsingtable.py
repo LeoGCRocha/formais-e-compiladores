@@ -78,7 +78,7 @@ def generate_parse_table(terminals, non_terminals, grammar, grammar_first, gramm
                 # Na outra iteração pegamos first[D] e para todo ParseTable[A][First de D] adicionamos a expressao A -> DE
                 for elem in grammar_first[first_char]:           
                     # Criamos uma grammar2 apenas como variavel aux
-                    grammar2 = sdeepcopy(grammar)
+                    grammar2 = deepcopy(grammar)
                     for j in grammar[non_terminal]:
                         if j[0] == first_char and elem != "&":
                             lista = list(filter(j.__eq__, grammar[non_terminal]))

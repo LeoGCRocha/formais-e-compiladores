@@ -7,4 +7,4 @@ print, print
 endif, endif
 resultado, var
 2000, const
-22, const
+sexo, var

@@ -70,7 +70,7 @@ class LexicalAnalyser():
             else:
                 for meaning in self.identificators:
                     if meaning in meaningList:
-                        self.tokens.append([lexeme, meaning])
+                        self.tokens.append([meaning, lexeme])
                         break
         return self.tokens
 

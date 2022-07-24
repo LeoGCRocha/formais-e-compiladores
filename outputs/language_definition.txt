@@ -1,4 +1,1 @@
-S -> idS' | j
-S' -> bS'' | ec
-S'' -> d | c
-A -> b | e
+E -> var assignment const operator const
