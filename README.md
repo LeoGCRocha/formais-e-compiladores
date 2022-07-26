@@ -8,4 +8,5 @@ Na pasta table_results/ e outputs/ é possível acompanhar os resultados gerados
 Define os arquivos inputs para execução do projeto.
 
 [FIRST/FOLLOW] Problema para casos nullable.
+
 [LEFT FACTORING] Problema no desenvolvimento.
